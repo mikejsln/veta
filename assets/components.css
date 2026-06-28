@@ -1,0 +1,426 @@
+/* ============================================================
+   VETA — COMPONENTS
+   Class-based, framework-agnostic. Built entirely on tokens.css.
+   Import order: tokens.css FIRST, then this file.
+   ============================================================ */
+
+/* ---------- Base ---------- */
+.veta {
+  font-family: var(--veta-font-sans);
+  color: var(--veta-text);
+  background: var(--veta-obsidian);
+  font-size: var(--veta-text-base);
+  line-height: var(--veta-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.veta *,
+.veta *::before,
+.veta *::after { box-sizing: border-box; }
+
+/* Visible focus for keyboard users */
+.veta :focus-visible {
+  outline: 2px solid var(--veta-amber);
+  outline-offset: 2px;
+  border-radius: var(--veta-radius-sm);
+}
+
+/* ---------- Layout helpers ---------- */
+.veta-container {
+  width: 100%;
+  max-width: var(--veta-container);
+  margin-inline: auto;
+  padding-inline: var(--veta-space-5);
+}
+
+.veta-section {
+  padding-block: var(--veta-space-8);
+}
+
+.veta-stack    { display: flex; flex-direction: column; gap: var(--veta-space-4); }
+.veta-stack-lg { display: flex; flex-direction: column; gap: var(--veta-space-6); }
+.veta-row      { display: flex; flex-wrap: wrap; gap: var(--veta-space-4); align-items: center; }
+.veta-grid     { display: grid; gap: var(--veta-space-5); }
+
+/* ---------- Typography ---------- */
+.veta-display {
+  font-size: var(--veta-text-3xl);
+  font-weight: var(--veta-weight-heavy);
+  line-height: var(--veta-leading-tight);
+  letter-spacing: var(--veta-track-tight);
+  text-wrap: balance;
+  margin: 0;
+}
+.veta-h2 {
+  font-size: var(--veta-text-2xl);
+  font-weight: var(--veta-weight-bold);
+  line-height: var(--veta-leading-snug);
+  letter-spacing: var(--veta-track-tight);
+  text-wrap: balance;
+  margin: 0;
+}
+.veta-h3 {
+  font-size: var(--veta-text-xl);
+  font-weight: var(--veta-weight-bold);
+  line-height: var(--veta-leading-snug);
+  letter-spacing: var(--veta-track-tight);
+  margin: 0;
+}
+.veta-h4 {
+  font-size: var(--veta-text-lg);
+  font-weight: var(--veta-weight-semi);
+  line-height: var(--veta-leading-snug);
+  margin: 0;
+}
+.veta-lead {
+  font-size: var(--veta-text-md);
+  color: var(--veta-text-muted);
+  max-width: var(--veta-measure);
+  margin: 0;
+}
+.veta-body {
+  max-width: var(--veta-measure);
+  color: var(--veta-text-muted);
+  margin: 0;
+}
+.veta-muted { color: var(--veta-text-dim); }
+
+/* The "instrument panel" eyebrow — a brand voice device */
+.veta-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--veta-space-2);
+  font-size: var(--veta-text-xs);
+  font-weight: var(--veta-weight-semi);
+  letter-spacing: var(--veta-track-label);
+  text-transform: uppercase;
+  color: var(--veta-text-dim);
+}
+.veta-kicker::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--veta-seam);   /* the seam, miniaturized */
+}
+
+/* Amber/teal accent on a span of text */
+.veta-accent { color: var(--veta-amber); }
+.veta-accent-teal { color: var(--veta-teal); }
+.veta-seam-text {
+  background: var(--veta-seam);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- The SEAM — signature divider ---------- */
+/* A thin luminous diagonal line cutting across a dark surface. */
+.veta-seam-line {
+  position: relative;
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--veta-strata) 12%,
+    var(--veta-copper) 48%,
+    var(--veta-amber) 52%,
+    var(--veta-strata) 88%,
+    transparent 100%);
+}
+.veta-seam-line::after {
+  content: "";
+  position: absolute;
+  inset: -3px 35% auto 35%;
+  height: 7px;
+  background: var(--veta-seam-soft);
+  filter: blur(6px);
+  opacity: 0.55;
+}
+
+/* A full diagonal seam overlay for hero/section backgrounds */
+.veta-seam-field {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--veta-rock);
+}
+.veta-seam-field::before {
+  content: "";
+  position: absolute;
+  left: -10%;
+  top: 50%;
+  width: 130%;
+  height: 2px;
+  transform: rotate(calc(-1 * var(--veta-seam-angle)));
+  background: linear-gradient(90deg,
+    transparent 0%, var(--veta-copper-deep) 25%,
+    var(--veta-amber) 55%, transparent 100%);
+  box-shadow: 0 0 22px 2px rgba(232,146,58,0.35);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ---------- Buttons ---------- */
+.veta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--veta-space-2);
+  padding: var(--veta-space-3) var(--veta-space-5);
+  font-family: inherit;
+  font-size: var(--veta-text-sm);
+  font-weight: var(--veta-weight-semi);
+  letter-spacing: 0.01em;
+  line-height: 1;
+  border-radius: var(--veta-radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform var(--veta-dur-fast) var(--veta-ease),
+              box-shadow var(--veta-dur-base) var(--veta-ease),
+              background var(--veta-dur-base) var(--veta-ease),
+              border-color var(--veta-dur-base) var(--veta-ease);
+}
+.veta-btn:active { transform: translateY(1px); }
+
+.veta-btn--primary {
+  background: var(--veta-seam);
+  color: var(--veta-on-accent);
+  font-weight: var(--veta-weight-bold);
+}
+.veta-btn--primary:hover {
+  box-shadow: var(--veta-glow-seam);
+}
+
+.veta-btn--secondary {
+  background: var(--veta-graphite-2);
+  color: var(--veta-text);
+  border-color: var(--veta-strata-2);
+}
+.veta-btn--secondary:hover {
+  border-color: var(--veta-copper);
+  background: var(--veta-graphite);
+}
+
+.veta-btn--ghost {
+  background: transparent;
+  color: var(--veta-text-muted);
+  border-color: transparent;
+}
+.veta-btn--ghost:hover {
+  color: var(--veta-text);
+  background: rgba(255,255,255,0.04);
+}
+
+.veta-btn[disabled],
+.veta-btn--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ---------- Cards ---------- */
+.veta-card {
+  position: relative;
+  background: var(--veta-graphite);
+  border: 1px solid var(--veta-strata);
+  border-radius: var(--veta-radius-lg);
+  padding: var(--veta-space-6);
+  transition: border-color var(--veta-dur-base) var(--veta-ease),
+              transform var(--veta-dur-base) var(--veta-ease-out),
+              box-shadow var(--veta-dur-base) var(--veta-ease);
+}
+.veta-card:hover {
+  border-color: var(--veta-strata-2);
+  box-shadow: var(--veta-shadow-md);
+}
+
+/* Card with a seam running along its top edge — signature variant */
+.veta-card--seam { overflow: hidden; }
+.veta-card--seam::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: var(--veta-seam);
+  opacity: 0.9;
+}
+.veta-card--seam:hover::before {
+  box-shadow: 0 0 16px 1px rgba(232,146,58,0.45);
+}
+
+/* ---------- Nav / header ---------- */
+.veta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--veta-space-5);
+  padding: var(--veta-space-4) 0;
+  border-bottom: 1px solid var(--veta-strata);
+}
+.veta-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--veta-space-6);
+}
+.veta-nav a {
+  color: var(--veta-text-muted);
+  text-decoration: none;
+  font-size: var(--veta-text-sm);
+  font-weight: var(--veta-weight-medium);
+  transition: color var(--veta-dur-fast) var(--veta-ease);
+}
+.veta-nav a:hover { color: var(--veta-text); }
+.veta-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--veta-space-3);
+  font-weight: var(--veta-weight-heavy);
+  letter-spacing: 0.08em;
+  font-size: var(--veta-text-md);
+  color: var(--veta-text);
+}
+
+/* ---------- Badges / pills ---------- */
+.veta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--veta-space-1);
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--veta-radius-pill);
+  font-size: var(--veta-text-xs);
+  font-weight: var(--veta-weight-semi);
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  line-height: 1.4;
+}
+.veta-badge--copper  { background: rgba(232,146,58,0.14); color: var(--veta-amber);  border-color: rgba(232,146,58,0.30); }
+.veta-badge--teal    { background: var(--veta-info-bg);    color: var(--veta-teal-soft); border-color: rgba(61,214,196,0.30); }
+.veta-badge--neutral { background: var(--veta-graphite-2); color: var(--veta-text-dim); border-color: var(--veta-strata); }
+.veta-badge--success { background: var(--veta-success-bg); color: var(--veta-success); border-color: rgba(74,222,128,0.30); }
+.veta-badge--warn    { background: var(--veta-warn-bg);    color: var(--veta-warn);    border-color: rgba(245,181,68,0.30); }
+.veta-badge--danger  { background: var(--veta-danger-bg);  color: var(--veta-danger);  border-color: rgba(242,109,109,0.30); }
+
+.veta-badge--dot::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---------- Stat / metric block ---------- */
+.veta-metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--veta-space-2);
+  padding: var(--veta-space-5);
+  background: var(--veta-graphite);
+  border: 1px solid var(--veta-strata);
+  border-radius: var(--veta-radius-lg);
+}
+.veta-metric__label {
+  font-size: var(--veta-text-xs);
+  font-weight: var(--veta-weight-semi);
+  letter-spacing: var(--veta-track-label);
+  text-transform: uppercase;
+  color: var(--veta-text-dim);
+}
+.veta-metric__value {
+  font-size: var(--veta-text-2xl);
+  font-weight: var(--veta-weight-heavy);
+  letter-spacing: var(--veta-track-tight);
+  line-height: 1;
+  color: var(--veta-text);
+  font-variant-numeric: tabular-nums;
+}
+.veta-metric__delta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--veta-space-1);
+  font-size: var(--veta-text-sm);
+  font-weight: var(--veta-weight-semi);
+  font-variant-numeric: tabular-nums;
+}
+.veta-metric__delta--up   { color: var(--veta-success); }
+.veta-metric__delta--down { color: var(--veta-danger); }
+.veta-metric__delta--flat { color: var(--veta-text-dim); }
+
+/* ---------- Tables ---------- */
+.veta-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--veta-strata);
+  border-radius: var(--veta-radius-lg);
+}
+.veta-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--veta-text-sm);
+  min-width: 560px;
+}
+.veta-table thead th {
+  text-align: left;
+  font-weight: var(--veta-weight-semi);
+  font-size: var(--veta-text-xs);
+  letter-spacing: var(--veta-track-label);
+  text-transform: uppercase;
+  color: var(--veta-text-dim);
+  padding: var(--veta-space-3) var(--veta-space-4);
+  background: var(--veta-graphite-2);
+  border-bottom: 1px solid var(--veta-strata);
+  white-space: nowrap;
+}
+.veta-table tbody td {
+  padding: var(--veta-space-3) var(--veta-space-4);
+  border-bottom: 1px solid var(--veta-strata);
+  color: var(--veta-text-muted);
+}
+.veta-table tbody tr:last-child td { border-bottom: 0; }
+.veta-table tbody tr { transition: background var(--veta-dur-fast) var(--veta-ease); }
+.veta-table tbody tr:hover { background: rgba(255,255,255,0.025); }
+.veta-table .veta-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--veta-text);
+}
+
+/* ---------- Chart container ---------- */
+.veta-chart {
+  position: relative;
+  background: var(--veta-graphite);
+  border: 1px solid var(--veta-strata);
+  border-radius: var(--veta-radius-lg);
+  padding: var(--veta-space-5);
+}
+.veta-chart__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--veta-space-4);
+  margin-bottom: var(--veta-space-4);
+}
+.veta-chart__title {
+  font-size: var(--veta-text-sm);
+  font-weight: var(--veta-weight-semi);
+  color: var(--veta-text);
+}
+.veta-chart__legend {
+  display: flex;
+  gap: var(--veta-space-4);
+  font-size: var(--veta-text-xs);
+  color: var(--veta-text-dim);
+}
+.veta-chart__legend span { display: inline-flex; align-items: center; gap: var(--veta-space-2); }
+.veta-chart__legend i { width: 14px; height: 2px; border-radius: 2px; display: inline-block; }
+.veta-chart__plot { width: 100%; display: block; }
+
+/* Responsive grid columns */
+@media (min-width: 720px) {
+  .veta-grid--2 { grid-template-columns: repeat(2, 1fr); }
+  .veta-grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .veta-grid--4 { grid-template-columns: repeat(4, 1fr); }
+}

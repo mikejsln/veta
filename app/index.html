@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Veta — Demand Intelligence Console</title>
+  <meta name="description" content="See demand before it's an order. Forward demand forecasts for Latin American building-materials manufacturers." />
+  <link rel="stylesheet" href="../assets/tokens.css" />
+  <link rel="stylesheet" href="../assets/components.css" />
+  <style>
+    /* ============================================================
+       VETA CONSOLE — app-specific layout built on the design library
+       ============================================================ */
+    html, body { margin: 0; padding: 0; }
+    html, body { overflow-x: hidden; max-width: 100%; }
+    body {
+      font-family: var(--veta-font-sans);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(232,146,58,0.06), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, rgba(61,214,196,0.05), transparent 60%),
+        var(--veta-obsidian);
+      color: var(--veta-text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    a { color: inherit; }
+
+    .app {
+      max-width: 1320px;
+      margin-inline: auto;
+      padding: 0 clamp(16px, 3vw, 32px) 64px;
+    }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: var(--veta-space-5);
+      padding: 14px clamp(16px, 3vw, 32px);
+      background: rgba(11,14,17,0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--veta-strata);
+    }
+    .topbar__brand { display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .topbar__brand svg { display: block; height: 38px; width: auto; }
+    .topbar__spacer { flex: 1 1 auto; }
+
+    .controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field__label {
+      font-size: 10px; font-weight: 600; letter-spacing: var(--veta-track-label);
+      text-transform: uppercase; color: var(--veta-text-dim);
+    }
+    .select {
+      appearance: none; -webkit-appearance: none;
+      background: var(--veta-graphite-2);
+      color: var(--veta-text);
+      border: 1px solid var(--veta-strata-2);
+      border-radius: var(--veta-radius-md);
+      padding: 9px 34px 9px 12px;
+      font-family: inherit; font-size: var(--veta-text-sm); font-weight: 500;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23B6BCC5' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 11px center;
+      transition: border-color var(--veta-dur-base) var(--veta-ease), box-shadow var(--veta-dur-base) var(--veta-ease);
+      min-width: 168px;
+    }
+    .select:hover { border-color: var(--veta-copper); }
+    .select:focus-visible { outline: none; border-color: var(--veta-copper); box-shadow: var(--veta-glow-seam); }
+
+    .demo-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 11px; border-radius: var(--veta-radius-pill);
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      background: rgba(232,146,58,0.14); color: var(--veta-amber);
+      border: 1px solid rgba(232,146,58,0.32);
+    }
+    .demo-badge::before { content:""; width:6px; height:6px; border-radius:50%; background: var(--veta-amber); box-shadow: 0 0 8px var(--veta-amber); }
+
+    .conn {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: var(--veta-text-dim);
+      white-space: nowrap;
+    }
+    .conn__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--veta-text-faint); transition: background var(--veta-dur-base); }
+    .conn--live .conn__dot { background: var(--veta-teal); box-shadow: 0 0 10px rgba(61,214,196,0.7); animation: pulse 2.4s var(--veta-ease) infinite; }
+    .conn--live { color: var(--veta-teal-soft); }
+    .conn--offline .conn__dot { background: var(--veta-warn); box-shadow: 0 0 8px rgba(245,181,68,0.5); }
+    .conn--offline { color: var(--veta-warn); }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+    /* ---------- Page intro ---------- */
+    .intro {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+      padding: 28px 0 22px;
+    }
+    .intro__title { font-size: clamp(22px, 3vw, 30px); font-weight: 800; letter-spacing: var(--veta-track-tight); margin: 6px 0 0; }
+    .intro__sub { color: var(--veta-text-dim); font-size: var(--veta-text-sm); margin: 6px 0 0; max-width: 56ch; }
+    .intro__scope { color: var(--veta-amber); font-weight: 600; }
+
+    /* ---------- KPI row ---------- */
+    .kpis { display: grid; gap: 16px; grid-template-columns: repeat(4, 1fr); margin-bottom: 22px; }
+    .kpi {
+      position: relative; overflow: hidden;
+      background: var(--veta-graphite);
+      border: 1px solid var(--veta-strata);
+      border-radius: var(--veta-radius-lg);
+      padding: 18px 20px 20px;
+      transition: border-color var(--veta-dur-base) var(--veta-ease), transform var(--veta-dur-base) var(--veta-ease-out);
+    }
+    .kpi::before {
+      content:""; position:absolute; inset: 0 0 auto 0; height: 2px;
+      background: var(--veta-seam); opacity: 0; transition: opacity var(--veta-dur-base);
+    }
+    .kpi:hover { border-color: var(--veta-strata-2); transform: translateY(-2px); }
+    .kpi:hover::before { opacity: 0.9; }
+    .kpi__label { font-size: 10.5px; font-weight: 600; letter-spacing: var(--veta-track-label); text-transform: uppercase; color: var(--veta-text-dim); margin: 0; }
+    .kpi__value { font-size: clamp(26px, 3.4vw, 34px); font-weight: 800; letter-spacing: var(--veta-track-tight); line-height: 1.05; margin: 12px 0 0; font-variant-numeric: tabular-nums; }
+    .kpi__unit { font-size: 13px; font-weight: 600; color: var(--veta-text-dim); margin-left: 6px; letter-spacing: 0; }
+    .kpi__foot { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .kpi__delta--up { color: var(--veta-success); }
+    .kpi__delta--down { color: var(--veta-danger); }
+    .kpi__delta--flat { color: var(--veta-text-dim); }
+    .kpi__note { color: var(--veta-text-dim); font-weight: 500; }
+    .kpi__spark { margin-top: 14px; display: block; width: 100%; height: 30px; }
+
+    /* ---------- Main grid ---------- */
+    .main-grid { display: grid; gap: 16px; grid-template-columns: 2fr 1fr; align-items: start; }
+    .col-stack { display: flex; flex-direction: column; gap: 16px; }
+
+    .panel {
+      background: var(--veta-graphite);
+      border: 1px solid var(--veta-strata);
+      border-radius: var(--veta-radius-lg);
+      padding: 20px;
+    }
+    .panel__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+    .panel__title { font-size: var(--veta-text-md); font-weight: 700; letter-spacing: var(--veta-track-tight); margin: 0; }
+    .panel__kicker { font-size: 10.5px; font-weight: 600; letter-spacing: var(--veta-track-label); text-transform: uppercase; color: var(--veta-text-dim); margin: 0 0 4px; }
+    .panel__sub { font-size: 12.5px; color: var(--veta-text-dim); margin: 4px 0 0; }
+
+    /* ---------- Hero chart ---------- */
+    .chart-legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: var(--veta-text-dim); }
+    .chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .chart-legend i { width: 16px; height: 0; border-top-width: 2px; border-top-style: solid; display: inline-block; }
+    .chart-legend i.dash { border-top-style: dashed; }
+    .chart-legend .swatch-band { width: 16px; height: 9px; border-radius: 2px; }
+
+    .hero-chart-wrap { position: relative; width: 100%; }
+    .hero-chart-wrap svg { display: block; width: 100%; height: auto; }
+    .chart-tip {
+      position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0;
+      transform: translate(-50%, -110%);
+      background: rgba(13,17,23,0.96);
+      border: 1px solid var(--veta-strata-2);
+      border-radius: var(--veta-radius-md);
+      padding: 9px 11px; min-width: 130px;
+      box-shadow: var(--veta-shadow-md);
+      transition: opacity var(--veta-dur-fast) var(--veta-ease);
+      z-index: 5;
+    }
+    .chart-tip__period { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--veta-text-dim); }
+    .chart-tip__row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 5px; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+    .chart-tip__row b { font-weight: 700; }
+
+    /* ---------- Regional panel ---------- */
+    .region-list { display: flex; flex-direction: column; gap: 2px; }
+    .region-row {
+      display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 12px;
+      padding: 11px 8px; border-radius: var(--veta-radius-md);
+      cursor: pointer; transition: background var(--veta-dur-fast) var(--veta-ease);
+      border: 1px solid transparent;
+    }
+    .region-row:hover { background: rgba(255,255,255,0.025); }
+    .region-row--active { background: rgba(232,146,58,0.07); border-color: rgba(232,146,58,0.22); }
+    .region-rank { font-size: 12px; font-weight: 700; color: var(--veta-text-faint); font-variant-numeric: tabular-nums; text-align: center; }
+    .region-main { min-width: 0; }
+    .region-name { font-size: 13.5px; font-weight: 600; color: var(--veta-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .region-country { font-size: 11px; color: var(--veta-text-dim); }
+    .region-bar { height: 5px; border-radius: 3px; background: var(--veta-strata); margin-top: 7px; overflow: hidden; }
+    .region-bar__fill { height: 100%; border-radius: 3px; background: var(--veta-signal); }
+    .region-row--active .region-bar__fill { background: var(--veta-seam); }
+    .region-fig { text-align: right; }
+    .region-vol { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .region-yoy { font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .yoy-up { color: var(--veta-success); } .yoy-down { color: var(--veta-danger); } .yoy-flat { color: var(--veta-text-dim); }
+
+    /* ---------- Signal feed ---------- */
+    .signal-item { display: flex; gap: 13px; padding: 13px 0; border-bottom: 1px solid var(--veta-strata); }
+    .signal-item:last-child { border-bottom: 0; padding-bottom: 0; }
+    .signal-item:first-child { padding-top: 0; }
+    .signal-icon {
+      flex-shrink: 0; width: 34px; height: 34px; border-radius: 9px;
+      display: grid; place-items: center;
+      background: var(--veta-graphite-2); border: 1px solid var(--veta-strata-2);
+      color: var(--veta-teal-soft);
+    }
+    .signal-icon svg { width: 17px; height: 17px; display: block; }
+    .signal-body { min-width: 0; flex: 1; }
+    .signal-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .signal-source { font-size: 12.5px; font-weight: 700; color: var(--veta-text); }
+    .signal-type { font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--veta-text-dim); }
+    .signal-desc { font-size: 12.5px; color: var(--veta-text-muted); margin: 5px 0 0; line-height: 1.5; }
+    .signal-meta { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+    .signal-strength { display: flex; align-items: center; gap: 7px; flex: 1; }
+    .strength-track { flex: 1; max-width: 110px; height: 4px; border-radius: 2px; background: var(--veta-strata); overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 2px; background: var(--veta-signal); }
+    .strength-val { font-size: 11px; font-weight: 700; color: var(--veta-teal-soft); font-variant-numeric: tabular-nums; }
+    .signal-date { font-size: 11px; color: var(--veta-text-faint); font-variant-numeric: tabular-nums; }
+
+    /* ---------- Alerts ---------- */
+    .alert-grid { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); }
+    .alert-card {
+      position: relative; overflow: hidden;
+      background: var(--veta-graphite-2);
+      border: 1px solid var(--veta-strata);
+      border-radius: var(--veta-radius-md);
+      padding: 15px 16px 15px 18px;
+    }
+    .alert-card::before { content:""; position:absolute; inset: 0 auto 0 0; width: 3px; }
+    .alert-card--surge::before { background: var(--veta-copper); box-shadow: 0 0 14px 1px rgba(232,146,58,0.5); }
+    .alert-card--drop::before  { background: var(--veta-danger); }
+    .alert-card--watch::before { background: var(--veta-warn); }
+    .alert-head { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+    .alert-title { font-size: 13.5px; font-weight: 700; color: var(--veta-text); line-height: 1.3; }
+    .alert-body { font-size: 12px; color: var(--veta-text-muted); line-height: 1.55; margin: 0; }
+    .alert-tag { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: var(--veta-radius-pill); font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; flex-shrink: 0; }
+    .alert-tag--surge { background: rgba(232,146,58,0.16); color: var(--veta-amber); border: 1px solid rgba(232,146,58,0.34); }
+    .alert-tag--drop  { background: var(--veta-danger-bg); color: var(--veta-danger); border: 1px solid rgba(242,109,109,0.34); }
+    .alert-tag--watch { background: var(--veta-warn-bg); color: var(--veta-warn); border: 1px solid rgba(245,181,68,0.34); }
+    .alert-loc { font-size: 11px; color: var(--veta-text-dim); margin-top: 9px; display: flex; align-items: center; gap: 6px; }
+
+    /* ---------- Loading / states ---------- */
+    .skeleton { background: linear-gradient(90deg, var(--veta-graphite-2) 25%, var(--veta-strata) 37%, var(--veta-graphite-2) 63%); background-size: 400% 100%; animation: shimmer 1.4s ease infinite; border-radius: var(--veta-radius-sm); }
+    @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+    .is-loading .kpi__value, .is-loading .kpi__foot { visibility: hidden; }
+
+    .empty { color: var(--veta-text-dim); font-size: 13px; text-align: center; padding: 24px; }
+
+    /* ---------- Footer ---------- */
+    .app-foot { margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--veta-strata); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: var(--veta-text-faint); }
+    .app-foot a { color: var(--veta-text-dim); text-decoration: none; }
+    .app-foot a:hover { color: var(--veta-amber); }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1080px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 720px) {
+      .topbar { flex-wrap: wrap; gap: 12px; }
+      .topbar__spacer { display: none; }
+      .controls { width: 100%; }
+      .select { flex: 1; min-width: 0; }
+      .kpis { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .alert-grid { grid-template-columns: 1fr; }
+      .intro { padding-top: 22px; }
+    }
+    @media (max-width: 460px) {
+      .kpis { grid-template-columns: 1fr; }
+    }
+    :focus-visible { outline: 2px solid var(--veta-amber); outline-offset: 2px; border-radius: var(--veta-radius-sm); }
+  </style>
+</head>
+<body>
+
+  <!-- ================= TOP BAR ================= -->
+  <header class="topbar">
+    <a class="topbar__brand" href="../index.html" aria-label="Veta home">
+      <svg viewBox="0 0 420 120" role="img" aria-label="Veta">
+        <defs>
+          <linearGradient id="tb-seam" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stop-color="#B85C1E"/><stop offset="0.45" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/>
+          </linearGradient>
+          <linearGradient id="tb-rock" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#1B222B"/><stop offset="1" stop-color="#0B0E11"/>
+          </linearGradient>
+          <filter id="tb-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g transform="translate(8,12)">
+          <rect x="0" y="0" width="96" height="96" rx="20" fill="url(#tb-rock)"/>
+          <rect x="0.75" y="0.75" width="94.5" height="94.5" rx="19.25" fill="none" stroke="#2A323D" stroke-width="1.25"/>
+          <g stroke="#3A4654" stroke-width="9.8" stroke-linecap="round" fill="none">
+            <path d="M25 27 L45 63"/><path d="M71 27 L51 63"/>
+          </g>
+          <g filter="url(#tb-glow)"><path d="M16 74 L80 22" stroke="url(#tb-seam)" stroke-width="4.2" stroke-linecap="round" fill="none"/></g>
+          <path d="M16 74 L80 22" stroke="#FFE0AE" stroke-width="1.1" stroke-linecap="round" fill="none" opacity="0.9"/>
+          <circle cx="48" cy="49.6" r="2.6" fill="#FFD79A" filter="url(#tb-glow)"/>
+        </g>
+        <text x="124" y="68" font-family="system-ui,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="54" font-weight="800" letter-spacing="2" fill="#F4F1EC">VETA</text>
+        <line x1="125" y1="86" x2="300" y2="86" stroke="url(#tb-seam)" stroke-width="2" stroke-linecap="round"/>
+        <text x="125" y="104" font-family="system-ui,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="12.5" font-weight="600" letter-spacing="3" fill="#8B95A1">DEMAND INTELLIGENCE</text>
+      </svg>
+    </a>
+
+    <span class="demo-badge">Demo</span>
+
+    <div class="topbar__spacer"></div>
+
+    <div class="controls">
+      <div class="field">
+        <label class="field__label" for="sel-region">Region</label>
+        <select id="sel-region" class="select" aria-label="Select region"></select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="sel-material">Material</label>
+        <select id="sel-material" class="select" aria-label="Select material"></select>
+      </div>
+      <div class="field">
+        <span class="field__label">Backend</span>
+        <span id="conn" class="conn conn--loading" title="Supabase connection status">
+          <span class="conn__dot"></span><span id="conn-text">Connecting…</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="app" id="app">
+
+    <!-- ================= INTRO ================= -->
+    <section class="intro">
+      <div>
+        <p class="panel__kicker" style="margin:0;">Forward demand console · Latin America</p>
+        <h1 class="intro__title">See demand before it's an order.</h1>
+        <p class="intro__sub" id="intro-sub">Fusing customs, public tenders, port manifests, satellite imagery and a field network into a forward forecast for <span class="intro__scope" id="scope-label">—</span>.</p>
+      </div>
+      <div style="text-align:right;">
+        <span class="panel__kicker" style="justify-content:flex-end;">Forecast horizon</span>
+        <div style="font-size:13px; color:var(--veta-text-dim); margin-top:6px; font-variant-numeric:tabular-nums;">Jul 2025 &nbsp;→&nbsp; Dec 2026 · <span style="color:var(--veta-amber); font-weight:600;">today Jun 2026</span></div>
+      </div>
+    </section>
+
+    <!-- ================= KPI ROW ================= -->
+    <section class="kpis is-loading" id="kpis">
+      <div class="kpi">
+        <p class="kpi__label">90-Day Forecast Demand</p>
+        <div class="kpi__value" id="kpi-demand">—</div>
+        <div class="kpi__foot"><span class="kpi__note" id="kpi-demand-note">selected material</span></div>
+        <svg class="kpi__spark" id="kpi-spark" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"></svg>
+      </div>
+      <div class="kpi">
+        <p class="kpi__label">YoY Change</p>
+        <div class="kpi__value" id="kpi-yoy">—</div>
+        <div class="kpi__foot"><span id="kpi-yoy-delta">—</span> <span class="kpi__note">vs. prior year</span></div>
+      </div>
+      <div class="kpi">
+        <p class="kpi__label">Model Confidence</p>
+        <div class="kpi__value" id="kpi-conf">—</div>
+        <div class="kpi__foot"><span class="kpi__note" id="kpi-conf-note">forward window</span></div>
+      </div>
+      <div class="kpi">
+        <p class="kpi__label">Active Alerts</p>
+        <div class="kpi__value" id="kpi-alerts">—</div>
+        <div class="kpi__foot"><span class="kpi__note" id="kpi-alerts-note">across coverage</span></div>
+      </div>
+    </section>
+
+    <!-- ================= MAIN GRID ================= -->
+    <div class="main-grid">
+
+      <!-- LEFT COLUMN -->
+      <div class="col-stack">
+
+        <!-- HERO CHART -->
+        <section class="panel" id="hero-panel">
+          <div class="panel__head">
+            <div>
+              <p class="panel__kicker">The seam · historical actuals → forward forecast</p>
+              <h2 class="panel__title" id="hero-title">Demand forecast</h2>
+            </div>
+            <div class="chart-legend">
+              <span><i style="border-top-color:var(--veta-teal);"></i> Actual</span>
+              <span><i class="dash" style="border-top-color:var(--veta-copper);"></i> Forecast</span>
+              <span><span class="swatch-band" style="background:rgba(232,146,58,0.18); border:1px solid rgba(232,146,58,0.3);"></span> Confidence</span>
+            </div>
+          </div>
+          <div class="hero-chart-wrap" id="hero-wrap">
+            <svg id="hero-chart" viewBox="0 0 960 380" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Demand forecast time series"></svg>
+            <div class="chart-tip" id="chart-tip"></div>
+          </div>
+        </section>
+
+        <!-- REGIONAL PANEL -->
+        <section class="panel">
+          <div class="panel__head">
+            <div>
+              <p class="panel__kicker">Where demand is moving</p>
+              <h2 class="panel__title">Regional demand · ranked</h2>
+              <p class="panel__sub" id="region-sub">Next-90-day forecast by region for the selected material. Click a region to load it.</p>
+            </div>
+          </div>
+          <div class="region-list" id="region-list"></div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="col-stack">
+
+        <!-- SIGNAL FEED -->
+        <section class="panel">
+          <div class="panel__head">
+            <div>
+              <p class="panel__kicker">The seam, being mined</p>
+              <h2 class="panel__title">Live signal feed</h2>
+              <p class="panel__sub">Leading indicators fused into the forecast.</p>
+            </div>
+          </div>
+          <div id="signal-feed"></div>
+        </section>
+
+        <!-- ALERTS -->
+        <section class="panel">
+          <div class="panel__head">
+            <div>
+              <p class="panel__kicker">Act before the order book</p>
+              <h2 class="panel__title">Demand alerts</h2>
+            </div>
+          </div>
+          <div class="alert-grid" id="alert-grid"></div>
+        </section>
+
+      </div>
+    </div>
+
+    <footer class="app-foot">
+      <span>Veta · Demand intelligence for Latin American construction · <span id="foot-source">live data</span></span>
+      <span>Follow the seam to the demand.</span>
+    </footer>
+  </main>
+
+  <script>
+  (function () {
+    "use strict";
+
+    // ============================================================
+    // CONFIG
+    // ============================================================
+    var BASE = "https://uyqlbbvjqbgobfplnbgf.supabase.co";
+    var KEY  = "sb_publishable_mwFz9fe8ziy-QymZcnFCxw_jMcU_3Dj";
+    var HEADERS = { apikey: KEY, Authorization: "Bearer " + KEY };
+    var TODAY = "2026-06-01"; // "today" marker == last month with an actual
+
+    // ============================================================
+    // EMBEDDED FALLBACK SAMPLE (used only if Supabase is unreachable)
+    // A trimmed, realistic slice so the dashboard always renders.
+    // ============================================================
+    var SAMPLE = buildSample();
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    var DATA = { regions: [], materials: [], forecasts: [], signals: [], alerts: [] };
+    var state = { region: "co-bog", material: "cement", offline: false };
+
+    // ============================================================
+    // FETCH HELPERS
+    // ============================================================
+    function q(table, params) {
+      var url = BASE + "/rest/v1/" + table + "?select=*" + (params ? "&" + params : "");
+      return fetch(url, { headers: HEADERS }).then(function (r) {
+        if (!r.ok) throw new Error(table + " " + r.status);
+        return r.json();
+      });
+    }
+
+    function loadAll() {
+      return Promise.all([
+        q("veta_regions", "order=region_name.asc"),
+        q("veta_materials", "order=id.asc"),
+        q("veta_demand_forecasts", "order=period.asc"),
+        q("veta_signals", "order=signal_date.desc"),
+        q("veta_alerts", "order=created_at.desc")
+      ]).then(function (res) {
+        DATA.regions = res[0]; DATA.materials = res[1]; DATA.forecasts = res[2];
+        DATA.signals = res[3]; DATA.alerts = res[4];
+        if (!DATA.regions.length || !DATA.forecasts.length) throw new Error("empty");
+        state.offline = false;
+      });
+    }
+
+    function useSample() {
+      DATA = SAMPLE;
+      state.offline = true;
+    }
+
+    // ============================================================
+    // UTIL
+    // ============================================================
+    function regionById(id) { return DATA.regions.find(function (r) { return r.id === id; }) || {}; }
+    function materialById(id) { return DATA.materials.find(function (m) { return m.id === id; }) || {}; }
+
+    function seriesFor(regionId, materialId) {
+      return DATA.forecasts
+        .filter(function (f) { return f.region_id === regionId && f.material_id === materialId; })
+        .slice()
+        .sort(function (a, b) { return a.period < b.period ? -1 : 1; });
+    }
+
+    // sum of next N forward (actual_volume === null) forecast months
+    function next90(regionId, materialId) {
+      var s = seriesFor(regionId, materialId).filter(function (f) { return f.actual_volume == null; });
+      var pts = s.slice(0, 3); // 3 forward months ≈ 90 days
+      return pts.reduce(function (acc, f) { return acc + (f.forecast_volume || 0); }, 0);
+    }
+
+    function fmtNum(n) {
+      if (n == null || isNaN(n)) return "—";
+      if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(2) + "M";
+      if (Math.abs(n) >= 1e3) return (n / 1e3).toFixed(n >= 1e4 ? 0 : 1) + "K";
+      return Math.round(n).toLocaleString();
+    }
+    function fmtFull(n) { return n == null ? "—" : Math.round(n).toLocaleString(); }
+    function fmtPct(x) { if (x == null) return "—"; return (x >= 0 ? "+" : "") + (x * 100).toFixed(1) + "%"; }
+    function monthLabel(period) {
+      var d = new Date(period + "T00:00:00");
+      return d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+    }
+    function monthShort(period) {
+      var d = new Date(period + "T00:00:00");
+      return d.toLocaleDateString("en-US", { month: "short" });
+    }
+    function timeAgo(dateStr) {
+      var d = new Date(dateStr);
+      var days = Math.round((new Date("2026-06-28") - d) / 86400000);
+      if (days <= 0) return "today";
+      if (days === 1) return "1d ago";
+      if (days < 30) return days + "d ago";
+      return Math.round(days / 30) + "mo ago";
+    }
+
+    // ============================================================
+    // RENDER: controls
+    // ============================================================
+    function renderControls() {
+      var rSel = document.getElementById("sel-region");
+      var mSel = document.getElementById("sel-material");
+      rSel.innerHTML = DATA.regions.map(function (r) {
+        return '<option value="' + r.id + '">' + r.region_name + " · " + r.country + "</option>";
+      }).join("");
+      mSel.innerHTML = DATA.materials.map(function (m) {
+        return '<option value="' + m.id + '">' + m.name + "</option>";
+      }).join("");
+      if (!regionById(state.region).id) state.region = DATA.regions[0].id;
+      if (!materialById(state.material).id) state.material = DATA.materials[0].id;
+      rSel.value = state.region;
+      mSel.value = state.material;
+      rSel.onchange = function () { state.region = this.value; renderAll(); };
+      mSel.onchange = function () { state.material = this.value; renderAll(); };
+    }
+
+    function renderConn() {
+      var el = document.getElementById("conn");
+      var txt = document.getElementById("conn-text");
+      el.className = "conn " + (state.offline ? "conn--offline" : "conn--live");
+      txt.textContent = state.offline ? "Offline sample" : "Live · Supabase";
+      document.getElementById("foot-source").textContent = state.offline
+        ? "offline sample dataset" : "live data · Supabase REST";
+    }
+
+    // ============================================================
+    // RENDER: KPIs
+    // ============================================================
+    function renderKpis() {
+      document.getElementById("kpis").classList.remove("is-loading");
+      var mat = materialById(state.material);
+      var s = seriesFor(state.region, state.material);
+      var fwd = s.filter(function (f) { return f.actual_volume == null; });
+
+      // 90-day forecast demand
+      var demand = next90(state.region, state.material);
+      document.getElementById("kpi-demand").innerHTML =
+        fmtNum(demand) + '<span class="kpi__unit">' + (mat.unit || "") + "</span>";
+      document.getElementById("kpi-demand-note").textContent = mat.name + " · next 3 months";
+
+      // spark of full series forecast volume
+      drawSpark(s);
+
+      // YoY
+      var yoy = fwd.length ? fwd[0].yoy_change : (s.length ? s[s.length - 1].yoy_change : null);
+      document.getElementById("kpi-yoy").textContent = fmtPct(yoy);
+      var dEl = document.getElementById("kpi-yoy-delta");
+      var dir = yoy > 0.002 ? "up" : (yoy < -0.002 ? "down" : "flat");
+      dEl.className = "kpi__delta--" + dir;
+      dEl.textContent = dir === "up" ? "▲ trending up" : dir === "down" ? "▼ trending down" : "▬ flat";
+
+      // Confidence — avg of forward window
+      var conf = fwd.length ? fwd.reduce(function (a, f) { return a + (f.confidence || 0); }, 0) / fwd.length : null;
+      document.getElementById("kpi-conf").textContent = conf == null ? "—" : Math.round(conf * 100) + "%";
+      document.getElementById("kpi-conf-note").textContent = fwd.length + "-month forward window";
+
+      // Alerts count (total active in coverage)
+      var n = DATA.alerts.length;
+      var regionAlerts = DATA.alerts.filter(function (a) { return a.region_id === state.region; }).length;
+      document.getElementById("kpi-alerts").textContent = n;
+      document.getElementById("kpi-alerts-note").textContent = regionAlerts + " in selected region";
+
+      // scope label + hero title
+      var reg = regionById(state.region);
+      document.getElementById("scope-label").textContent = mat.name + " in " + reg.region_name;
+      document.getElementById("hero-title").textContent = mat.name + " demand · " + reg.region_name;
+    }
+
+    function drawSpark(series) {
+      var svg = document.getElementById("kpi-spark");
+      if (!series.length) { svg.innerHTML = ""; return; }
+      var vals = series.map(function (f) { return f.actual_volume != null ? f.actual_volume : f.forecast_volume; });
+      var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
+      var W = 200, H = 30, pad = 2;
+      var span = (max - min) || 1;
+      var pts = vals.map(function (v, i) {
+        var x = pad + (i / (vals.length - 1)) * (W - pad * 2);
+        var y = H - pad - ((v - min) / span) * (H - pad * 2);
+        return x.toFixed(1) + "," + y.toFixed(1);
+      });
+      // split actual vs forecast at the today index
+      var splitIdx = series.findIndex(function (f) { return f.actual_volume == null; });
+      if (splitIdx < 0) splitIdx = series.length;
+      var actualPts = pts.slice(0, Math.max(splitIdx, 1));
+      var fcPts = pts.slice(Math.max(splitIdx - 1, 0));
+      svg.innerHTML =
+        '<polyline fill="none" stroke="#3DD6C4" stroke-width="1.6" points="' + actualPts.join(" ") + '"/>' +
+        '<polyline fill="none" stroke="#E8923A" stroke-width="1.6" stroke-dasharray="3 2" points="' + fcPts.join(" ") + '"/>';
+    }
+
+    // ============================================================
+    // RENDER: HERO CHART (inline SVG, hand-rolled)
+    // ============================================================
+    function renderHero() {
+      var svg = document.getElementById("hero-chart");
+      var s = seriesFor(state.region, state.material);
+      if (!s.length) { svg.innerHTML = '<text x="480" y="190" fill="#5C6573" text-anchor="middle" font-size="14">No data for this selection</text>'; return; }
+
+      var W = 960, H = 380;
+      var m = { t: 26, r: 24, b: 44, l: 64 };
+      var iw = W - m.l - m.r, ih = H - m.t - m.b;
+
+      var actuals = s.filter(function (f) { return f.actual_volume != null; });
+      var forwards = s.filter(function (f) { return f.actual_volume == null; });
+
+      // value range across actuals + forecasts (+confidence band)
+      var allVals = [];
+      s.forEach(function (f) {
+        if (f.actual_volume != null) allVals.push(f.actual_volume);
+        allVals.push(f.forecast_volume);
+        // band uses confidence to widen
+        var band = f.forecast_volume * (1 - (f.confidence != null ? f.confidence : 0.9)) * 1.4;
+        allVals.push(f.forecast_volume + band);
+        allVals.push(f.forecast_volume - band);
+      });
+      var minV = Math.min.apply(null, allVals), maxV = Math.max.apply(null, allVals);
+      var padV = (maxV - minV) * 0.12 || 1;
+      minV = Math.max(0, minV - padV); maxV = maxV + padV;
+
+      function X(i) { return m.l + (s.length === 1 ? iw / 2 : (i / (s.length - 1)) * iw); }
+      function Y(v) { return m.t + ih - ((v - minV) / (maxV - minV)) * ih; }
+
+      var todayIdx = s.findIndex(function (f) { return f.period === TODAY; });
+      if (todayIdx < 0) todayIdx = actuals.length - 1;
+
+      var parts = [];
+
+      // defs
+      parts.push(
+        '<defs>' +
+          '<linearGradient id="hc-seam" x1="0" y1="1" x2="1" y2="0">' +
+            '<stop offset="0" stop-color="#B85C1E"/><stop offset="0.5" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/>' +
+          '</linearGradient>' +
+          '<linearGradient id="hc-teal-fill" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0" stop-color="rgba(61,214,196,0.20)"/><stop offset="1" stop-color="rgba(61,214,196,0)"/>' +
+          '</linearGradient>' +
+          '<linearGradient id="hc-band" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0" stop-color="rgba(232,146,58,0.26)"/><stop offset="1" stop-color="rgba(232,146,58,0.04)"/>' +
+          '</linearGradient>' +
+          '<filter id="hc-glow" x="-20%" y="-40%" width="140%" height="180%">' +
+            '<feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>' +
+          '</filter>' +
+        '</defs>'
+      );
+
+      // gridlines + y labels (5 ticks)
+      for (var t = 0; t <= 4; t++) {
+        var gv = minV + (t / 4) * (maxV - minV);
+        var gy = Y(gv);
+        parts.push('<line x1="' + m.l + '" y1="' + gy.toFixed(1) + '" x2="' + (W - m.r) + '" y2="' + gy.toFixed(1) + '" stroke="#2A323D" stroke-width="1" ' + (t === 0 ? '' : 'stroke-dasharray="2 4"') + '/>');
+        parts.push('<text x="' + (m.l - 10) + '" y="' + (gy + 4).toFixed(1) + '" fill="#5C6573" font-size="11" text-anchor="end" font-family="system-ui">' + fmtNum(gv) + '</text>');
+      }
+
+      // x labels (every other month to avoid crowding)
+      s.forEach(function (f, i) {
+        if (i % 2 !== 0 && i !== s.length - 1) return;
+        parts.push('<text x="' + X(i).toFixed(1) + '" y="' + (H - 16) + '" fill="#5C6573" font-size="10.5" text-anchor="middle" font-family="system-ui">' + monthLabel(f.period) + '</text>');
+      });
+
+      // ----- confidence band (forward only) -----
+      var bandTop = [], bandBot = [];
+      forwards.forEach(function (f) {
+        var i = s.indexOf(f);
+        var band = f.forecast_volume * (1 - (f.confidence != null ? f.confidence : 0.9)) * 1.4;
+        bandTop.push(X(i).toFixed(1) + "," + Y(f.forecast_volume + band).toFixed(1));
+        bandBot.push(X(i).toFixed(1) + "," + Y(f.forecast_volume - band).toFixed(1));
+      });
+      if (forwards.length) {
+        // anchor band start at the today point
+        var anchorX = X(todayIdx).toFixed(1), anchorY = Y(s[todayIdx].forecast_volume).toFixed(1);
+        var bandPath = "M" + anchorX + "," + anchorY + " L" + bandTop.join(" L") + " L" + bandBot.reverse().join(" L") + " Z";
+        parts.push('<path d="' + bandPath + '" fill="url(#hc-band)" stroke="none"/>');
+      }
+
+      // ----- actual area fill -----
+      var actPts = actuals.map(function (f) { var i = s.indexOf(f); return X(i).toFixed(1) + "," + Y(f.actual_volume).toFixed(1); });
+      if (actPts.length) {
+        var areaPath = "M" + X(0).toFixed(1) + "," + Y(minV).toFixed(1) + " L" +
+          actPts.join(" L") + " L" + X(actuals.length - 1).toFixed(1) + "," + Y(minV).toFixed(1) + " Z";
+        parts.push('<path d="' + areaPath + '" fill="url(#hc-teal-fill)" stroke="none"/>');
+      }
+
+      // ----- actual line (TEAL, solid) -----
+      parts.push('<polyline fill="none" stroke="#3DD6C4" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" points="' + actPts.join(" ") + '"/>');
+
+      // ----- forecast line (COPPER, dashed, glowing) — the seam -----
+      var fcPts = [];
+      // start from today point for continuity
+      fcPts.push(X(todayIdx).toFixed(1) + "," + Y(s[todayIdx].forecast_volume != null ? s[todayIdx].forecast_volume : s[todayIdx].actual_volume).toFixed(1));
+      forwards.forEach(function (f) { var i = s.indexOf(f); fcPts.push(X(i).toFixed(1) + "," + Y(f.forecast_volume).toFixed(1)); });
+      if (fcPts.length > 1) {
+        parts.push('<polyline fill="none" stroke="url(#hc-seam)" stroke-width="3" stroke-dasharray="7 5" stroke-linejoin="round" stroke-linecap="round" filter="url(#hc-glow)" points="' + fcPts.join(" ") + '"/>');
+        parts.push('<polyline fill="none" stroke="#FFE0AE" stroke-width="1" stroke-dasharray="7 5" opacity="0.7" points="' + fcPts.join(" ") + '"/>');
+      }
+
+      // ----- TODAY marker -----
+      var tx = X(todayIdx).toFixed(1);
+      parts.push('<line x1="' + tx + '" y1="' + m.t + '" x2="' + tx + '" y2="' + (m.t + ih) + '" stroke="#E8923A" stroke-width="1" stroke-dasharray="3 4" opacity="0.55"/>');
+      parts.push('<circle cx="' + tx + '" cy="' + Y(s[todayIdx].forecast_volume).toFixed(1) + '" r="4.5" fill="#FFC777" filter="url(#hc-glow)"/>');
+      parts.push('<text x="' + tx + '" y="' + (m.t - 8) + '" fill="#FFC777" font-size="10.5" font-weight="700" text-anchor="middle" letter-spacing="1.2" font-family="system-ui">TODAY</text>');
+
+      // ----- forecast endpoint glow dot -----
+      if (forwards.length) {
+        var last = forwards[forwards.length - 1];
+        var li = s.indexOf(last);
+        parts.push('<circle cx="' + X(li).toFixed(1) + '" cy="' + Y(last.forecast_volume).toFixed(1) + '" r="4" fill="#E8923A" filter="url(#hc-glow)"/>');
+      }
+
+      // ----- interactive hover dots (transparent hit targets) -----
+      s.forEach(function (f, i) {
+        var v = f.actual_volume != null ? f.actual_volume : f.forecast_volume;
+        var cx = X(i).toFixed(1), cy = Y(v).toFixed(1);
+        var isFwd = f.actual_volume == null;
+        parts.push('<circle cx="' + cx + '" cy="' + cy + '" r="3" fill="' + (isFwd ? "#E8923A" : "#3DD6C4") + '" opacity="0.0" class="hc-dot"/>');
+        parts.push('<rect class="hc-hit" data-i="' + i + '" x="' + (cx - 14) + '" y="' + m.t + '" width="28" height="' + ih + '" fill="transparent" style="cursor:crosshair"/>');
+      });
+
+      svg.innerHTML = parts.join("");
+
+      // tooltip wiring
+      var tip = document.getElementById("chart-tip");
+      var wrap = document.getElementById("hero-wrap");
+      var hits = svg.querySelectorAll(".hc-hit");
+      hits.forEach(function (h) {
+        h.addEventListener("mouseenter", function () {
+          var i = +this.getAttribute("data-i");
+          var f = s[i];
+          var isFwd = f.actual_volume == null;
+          var v = isFwd ? f.forecast_volume : f.actual_volume;
+          // position relative to wrapper using svg coordinate -> pixel mapping
+          var rect = svg.getBoundingClientRect();
+          var scale = rect.width / W;
+          var px = X(i) * scale;
+          var py = Y(v) * scale;
+          tip.style.left = px + "px";
+          tip.style.top = py + "px";
+          tip.innerHTML =
+            '<div class="chart-tip__period">' + monthLabel(f.period) + (isFwd ? " · forecast" : " · actual") + '</div>' +
+            '<div class="chart-tip__row"><span style="color:' + (isFwd ? "#FFC777" : "#8FF0E5") + '">' + (isFwd ? "Forecast" : "Actual") + '</span><b>' + fmtFull(v) + '</b></div>' +
+            (isFwd ? '<div class="chart-tip__row"><span style="color:#8B95A1">Confidence</span><b>' + Math.round((f.confidence || 0) * 100) + '%</b></div>'
+                   : '<div class="chart-tip__row"><span style="color:#8B95A1">Model</span><b>' + fmtFull(f.forecast_volume) + '</b></div>');
+          tip.style.opacity = "1";
+        });
+        h.addEventListener("mouseleave", function () { tip.style.opacity = "0"; });
+      });
+      wrap.addEventListener("mouseleave", function () { tip.style.opacity = "0"; });
+    }
+
+    // ============================================================
+    // RENDER: REGIONAL PANEL
+    // ============================================================
+    function renderRegions() {
+      var list = document.getElementById("region-list");
+      var mat = materialById(state.material);
+      var rows = DATA.regions.map(function (r) {
+        var s = seriesFor(r.id, state.material);
+        var fwd = s.filter(function (f) { return f.actual_volume == null; }).slice(0, 3);
+        var demand = fwd.reduce(function (a, f) { return a + (f.forecast_volume || 0); }, 0);
+        var yoy = fwd.length ? fwd[0].yoy_change : (s.length ? s[s.length - 1].yoy_change : 0);
+        return { r: r, demand: demand, yoy: yoy, series: s };
+      }).filter(function (x) { return x.series.length; })
+        .sort(function (a, b) { return b.demand - a.demand; });
+
+      var maxD = rows.length ? rows[0].demand : 1;
+      document.getElementById("region-sub").textContent =
+        "Next-90-day " + mat.name + " forecast by region · click to load. Unit: " + (mat.unit || "");
+
+      list.innerHTML = rows.map(function (x, idx) {
+        var pct = maxD ? (x.demand / maxD) * 100 : 0;
+        var ydir = x.yoy > 0.002 ? "up" : (x.yoy < -0.002 ? "down" : "flat");
+        var active = x.r.id === state.region;
+        return '' +
+          '<div class="region-row' + (active ? " region-row--active" : "") + '" data-region="' + x.r.id + '" role="button" tabindex="0">' +
+            '<div class="region-rank">' + (idx + 1) + '</div>' +
+            '<div class="region-main">' +
+              '<div class="region-name">' + x.r.region_name + '</div>' +
+              '<div class="region-country">' + x.r.country + '</div>' +
+              '<div class="region-bar"><div class="region-bar__fill" style="width:' + pct.toFixed(1) + '%"></div></div>' +
+            '</div>' +
+            '<div class="region-fig">' +
+              '<div class="region-vol">' + fmtNum(x.demand) + '</div>' +
+              '<div class="region-yoy yoy-' + ydir + '">' + (ydir === "up" ? "▲" : ydir === "down" ? "▼" : "▬") + " " + fmtPct(x.yoy) + '</div>' +
+            '</div>' +
+          '</div>';
+      }).join("") || '<div class="empty">No regional data for this material.</div>';
+
+      Array.prototype.forEach.call(list.querySelectorAll(".region-row"), function (el) {
+        function go() { state.region = el.getAttribute("data-region"); document.getElementById("sel-region").value = state.region; renderAll(); }
+        el.addEventListener("click", go);
+        el.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+      });
+    }
+
+    // ============================================================
+    // RENDER: SIGNAL FEED
+    // ============================================================
+    var SIGNAL_ICONS = {
+      customs:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6"/><path d="M5 9v10h14V9"/><path d="M9 19v-6h6v6"/></svg>',
+      tenders:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>',
+      port:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18l-2 4H5z"/><path d="M5 17V9l7-4 7 4v8"/><path d="M9 17V12h6v5"/></svg>',
+      satellite:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z"/></svg>',
+      field:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+    };
+
+    function renderSignals() {
+      var feed = document.getElementById("signal-feed");
+      // show region-relevant signals first, then global
+      var sigs = DATA.signals.slice().sort(function (a, b) {
+        var ar = a.region_id === state.region ? 0 : 1, br = b.region_id === state.region ? 0 : 1;
+        if (ar !== br) return ar - br;
+        return a.signal_date < b.signal_date ? 1 : -1;
+      });
+      feed.innerHTML = sigs.map(function (sig) {
+        var reg = regionById(sig.region_id);
+        var pct = Math.round((sig.signal_strength || 0) * 100);
+        return '' +
+          '<div class="signal-item">' +
+            '<div class="signal-icon">' + (SIGNAL_ICONS[sig.source_type] || SIGNAL_ICONS.field) + '</div>' +
+            '<div class="signal-body">' +
+              '<div class="signal-top"><span class="signal-source">' + sig.source_name + '</span><span class="signal-type">' + sig.source_type + '</span></div>' +
+              '<p class="signal-desc">' + sig.description + '</p>' +
+              '<div class="signal-meta">' +
+                '<div class="signal-strength"><div class="strength-track"><div class="strength-fill" style="width:' + pct + '%"></div></div><span class="strength-val">' + pct + '</span></div>' +
+                '<span class="signal-date">' + (reg.region_name ? reg.region_name + " · " : "") + timeAgo(sig.signal_date) + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      }).join("") || '<div class="empty">No active signals.</div>';
+    }
+
+    // ============================================================
+    // RENDER: ALERTS
+    // ============================================================
+    function renderAlerts() {
+      var grid = document.getElementById("alert-grid");
+      var alerts = DATA.alerts.slice().sort(function (a, b) {
+        var order = { surge: 0, drop: 1, watch: 2 };
+        return (order[a.severity] || 3) - (order[b.severity] || 3);
+      });
+      grid.innerHTML = alerts.map(function (a) {
+        var reg = regionById(a.region_id);
+        var mat = materialById(a.material_id);
+        return '' +
+          '<div class="alert-card alert-card--' + a.severity + '">' +
+            '<div class="alert-head">' +
+              '<span class="alert-tag alert-tag--' + a.severity + '">' + a.severity + '</span>' +
+            '</div>' +
+            '<div class="alert-title">' + a.title + '</div>' +
+            '<p class="alert-body">' + a.body + '</p>' +
+            '<div class="alert-loc">📍 ' + (reg.region_name || a.region_id) + ' · ' + (mat.name || a.material_id) + '</div>' +
+          '</div>';
+      }).join("") || '<div class="empty">No active alerts.</div>';
+    }
+
+    // ============================================================
+    // RENDER ALL
+    // ============================================================
+    function renderAll() {
+      renderConn();
+      renderKpis();
+      renderHero();
+      renderRegions();
+      renderSignals();
+      renderAlerts();
+    }
+
+    // ============================================================
+    // BOOT
+    // ============================================================
+    function boot() {
+      loadAll()
+        .then(function () { renderControls(); renderAll(); })
+        .catch(function (err) {
+          console.warn("[Veta] Live backend unavailable, using offline sample:", err && err.message);
+          useSample();
+          renderControls();
+          renderAll();
+        });
+    }
+
+    // small delay so the loading state is perceivable, then boot
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", boot);
+    } else { boot(); }
+
+    // re-render hero on resize (tooltip positioning depends on size)
+    var rt;
+    window.addEventListener("resize", function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () { if (DATA.forecasts.length) renderHero(); }, 150);
+    });
+
+    // ============================================================
+    // EMBEDDED SAMPLE BUILDER (offline fallback)
+    // ============================================================
+    function buildSample() {
+      var regions = [
+        { id: "co-bog", country: "Colombia", region_name: "Bogota", lat: 4.711, lng: -74.0721 },
+        { id: "mx-mty", country: "Mexico", region_name: "Monterrey", lat: 25.6866, lng: -100.3161 },
+        { id: "gt-gua", country: "Guatemala", region_name: "Guatemala City Metro", lat: 14.6349, lng: -90.5069 },
+        { id: "gt-pac", country: "Guatemala", region_name: "Pacific Corridor (Escuintla)", lat: 14.305, lng: -90.7853 },
+        { id: "sv-ss", country: "El Salvador", region_name: "San Salvador", lat: 13.6929, lng: -89.2182 },
+        { id: "hn-sps", country: "Honduras", region_name: "San Pedro Sula", lat: 15.5039, lng: -88.025 },
+        { id: "cr-sjo", country: "Costa Rica", region_name: "San Jose GAM", lat: 9.9281, lng: -84.0907 }
+      ];
+      var materials = [
+        { id: "cement", name: "Cement", unit: "metric tons" },
+        { id: "steel", name: "Rebar & Structural Steel", unit: "metric tons" },
+        { id: "aluminum", name: "Aluminum Profiles", unit: "metric tons" },
+        { id: "paint", name: "Architectural Paint", unit: "kiloliters" }
+      ];
+      // 18 months: 2025-07 .. 2026-12, actuals through 2026-06
+      var periods = [];
+      for (var y = 2025, mo = 7, k = 0; k < 18; k++) {
+        periods.push(y + "-" + String(mo).padStart(2, "0") + "-01");
+        mo++; if (mo > 12) { mo = 1; y++; }
+      }
+      // base demand per region/material (rough but believable)
+      var base = {
+        cement:   { "co-bog": 120000, "mx-mty": 98000, "gt-gua": 41000, "gt-pac": 23000, "sv-ss": 19000, "hn-sps": 17000, "cr-sjo": 21000 },
+        steel:    { "co-bog": 54000, "mx-mty": 72000, "gt-gua": 18000, "gt-pac": 9000, "sv-ss": 7800, "hn-sps": 7000, "cr-sjo": 9500 },
+        aluminum: { "co-bog": 9800, "mx-mty": 14200, "gt-gua": 3600, "gt-pac": 4100, "sv-ss": 1500, "hn-sps": 1300, "cr-sjo": 2200 },
+        paint:    { "co-bog": 6400, "mx-mty": 7100, "gt-gua": 2300, "gt-pac": 1100, "sv-ss": 980, "hn-sps": 870, "cr-sjo": 1600 }
+      };
+      var yoyMap = {
+        cement:   { "co-bog": 0.063, "mx-mty": 0.082, "gt-gua": 0.041, "gt-pac": 0.028, "sv-ss": 0.019, "hn-sps": -0.015, "cr-sjo": 0.005 },
+        steel:    { "co-bog": 0.047, "mx-mty": 0.094, "gt-gua": 0.033, "gt-pac": 0.022, "sv-ss": 0.012, "hn-sps": 0.008, "cr-sjo": 0.014 },
+        aluminum: { "co-bog": 0.038, "mx-mty": 0.071, "gt-gua": 0.052, "gt-pac": 0.061, "sv-ss": 0.009, "hn-sps": 0.004, "cr-sjo": 0.018 },
+        paint:    { "co-bog": 0.029, "mx-mty": 0.044, "gt-gua": 0.026, "gt-pac": 0.017, "sv-ss": 0.011, "hn-sps": -0.006, "cr-sjo": 0.021 }
+      };
+      var forecasts = [], id = 1;
+      regions.forEach(function (r) {
+        materials.forEach(function (m) {
+          var b = base[m.id][r.id];
+          var yoy = yoyMap[m.id][r.id];
+          periods.forEach(function (p, i) {
+            // seasonal sine + gentle trend
+            var seasonal = 1 + 0.12 * Math.sin((i / 12) * Math.PI * 2 + 1);
+            var trend = 1 + (yoy) * (i / 12);
+            var val = b * seasonal * trend;
+            var isForward = i >= 12; // 2026-07 onward
+            var conf = isForward ? Math.max(0.62, 0.95 - (i - 11) * 0.045) : 0.97;
+            forecasts.push({
+              id: id++, region_id: r.id, material_id: m.id, period: p,
+              actual_volume: isForward ? null : Math.round(val * (1 + (Math.sin(i * 3.1) * 0.015))),
+              forecast_volume: Math.round(val),
+              confidence: +conf.toFixed(3),
+              yoy_change: yoy
+            });
+          });
+        });
+      });
+      var signals = [
+        { id: 1, source_name: "SAT/SIECA customs imports", source_type: "customs", region_id: "gt-gua", signal_date: "2026-06-20", signal_strength: 0.86, description: "Clinker & rebar import volumes up 9% QoQ at Puerto Quetzal" },
+        { id: 2, source_name: "GUATECOMPRAS tenders", source_type: "tenders", region_id: "gt-gua", signal_date: "2026-06-22", signal_strength: 0.78, description: "3 new municipal infrastructure tenders (Q3 award)" },
+        { id: 3, source_name: "Port manifests (Quetzal)", source_type: "port", region_id: "gt-pac", signal_date: "2026-06-25", signal_strength: 0.81, description: "Aluminum profile shipments tracking above seasonal norm" },
+        { id: 4, source_name: "Sentinel-2 imagery", source_type: "satellite", region_id: "co-bog", signal_date: "2026-06-18", signal_strength: 0.73, description: "Active earthmoving detected across 4 new northern-corridor sites" },
+        { id: 5, source_name: "WhatsApp field network", source_type: "field", region_id: "mx-mty", signal_date: "2026-06-26", signal_strength: 0.69, description: "Ferreteria stockouts on 42.5 cement reported by 6 collaborators" },
+        { id: 6, source_name: "ONCAE tenders", source_type: "tenders", region_id: "hn-sps", signal_date: "2026-06-15", signal_strength: 0.64, description: "Highway rehabilitation package re-tendered" },
+        { id: 7, source_name: "COMPRASAL tenders", source_type: "tenders", region_id: "sv-ss", signal_date: "2026-06-19", signal_strength: 0.6, description: "School construction batch posted" },
+        { id: 8, source_name: "Sentinel-2 imagery", source_type: "satellite", region_id: "cr-sjo", signal_date: "2026-06-21", signal_strength: 0.58, description: "GAM residential starts flat vs prior quarter" }
+      ];
+      var alerts = [
+        { id: 1, region_id: "co-bog", material_id: "cement", severity: "surge", title: "Bogota cement demand surge forecast", body: "Fused signals project +18% cement demand in Bogota over the next 90 days, 6-8 weeks before it hits order books. Recommend pre-positioning inventory.", created_at: "2026-06-28T15:44:03Z" },
+        { id: 2, region_id: "mx-mty", material_id: "steel", severity: "surge", title: "Monterrey rebar acceleration", body: "Tender + customs + field signals indicate a rebar demand acceleration in the Monterrey metro; confidence 0.82.", created_at: "2026-06-28T15:44:03Z" },
+        { id: 3, region_id: "gt-pac", material_id: "aluminum", severity: "watch", title: "Pacific Corridor aluminum watch", body: "Port manifests running hot but tender pipeline thin — monitor before committing capacity.", created_at: "2026-06-28T15:44:03Z" },
+        { id: 4, region_id: "hn-sps", material_id: "cement", severity: "drop", title: "San Pedro Sula softening", body: "Leading signals point to a near-term cement demand dip; consider deferring promotional pricing.", created_at: "2026-06-28T15:44:03Z" }
+      ];
+      return { regions: regions, materials: materials, forecasts: forecasts, signals: signals, alerts: alerts };
+    }
+
+  })();
+  </script>
+</body>
+</html>

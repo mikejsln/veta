@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="120" viewBox="0 0 420 120" role="img" aria-label="Veta — follow the seam to the demand">
+  <title>Veta logo — wordmark with ore-seam mark</title>
+  <defs>
+    <linearGradient id="vl-seam" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#B85C1E"/>
+      <stop offset="0.45" stop-color="#E8923A"/>
+      <stop offset="1" stop-color="#FFC777"/>
+    </linearGradient>
+    <linearGradient id="vl-rock" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1B222B"/>
+      <stop offset="1" stop-color="#0B0E11"/>
+    </linearGradient>
+    <filter id="vl-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ===== Mark ===== -->
+  <g transform="translate(8,12)">
+    <rect x="0" y="0" width="96" height="96" rx="20" fill="url(#vl-rock)"/>
+    <rect x="0.75" y="0.75" width="94.5" height="94.5" rx="19.25" fill="none" stroke="#2A323D" stroke-width="1.25"/>
+
+    <g stroke="#3A4654" stroke-width="9.8" stroke-linecap="round" fill="none">
+      <path d="M25 27 L45 63"/>
+      <path d="M71 27 L51 63"/>
+    </g>
+
+    <g filter="url(#vl-glow)">
+      <path d="M16 74 L80 22" stroke="url(#vl-seam)" stroke-width="4.2" stroke-linecap="round" fill="none"/>
+    </g>
+    <path d="M16 74 L80 22" stroke="#FFE0AE" stroke-width="1.1" stroke-linecap="round" fill="none" opacity="0.9"/>
+    <circle cx="48" cy="49.6" r="2.6" fill="#FFD79A" filter="url(#vl-glow)"/>
+  </g>
+
+  <!-- ===== Wordmark ===== -->
+  <text x="124" y="68"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="54" font-weight="800" letter-spacing="2"
+        fill="#F4F1EC">VETA</text>
+
+  <!-- The seam echoes under the wordmark as the descriptor underline -->
+  <line x1="125" y1="86" x2="300" y2="86" stroke="url(#vl-seam)" stroke-width="2" stroke-linecap="round"/>
+  <text x="125" y="104"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="12.5" font-weight="600" letter-spacing="3"
+        fill="#8B95A1">DEMAND INTELLIGENCE</text>
+</svg>

@@ -1,0 +1,958 @@
+<!--
+  Veta — marketing landing page
+  The demand-intelligence layer for Latin American construction.
+  Self-contained except local assets/ (CSS + SVG). Served on GitHub Pages.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Veta — See demand before it's an order.</title>
+  <meta name="description" content="Veta is the demand-intelligence layer for Latin American construction. We fuse customs, public tenders, port manifests, satellite imagery and a field network into a forward demand forecast for building-materials manufacturers." />
+  <meta name="theme-color" content="#0B0E11" />
+
+  <!-- Carried-in Veta design library -->
+  <link rel="stylesheet" href="assets/tokens.css" />
+  <link rel="stylesheet" href="assets/components.css" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" />
+
+  <style>
+    /* ===========================================================
+       Page-local styles — built on the design tokens only.
+       No new colors invented; everything references --veta-* vars.
+       =========================================================== */
+
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    body { margin: 0; }
+
+    .veta-section--tight { padding-block: var(--veta-space-7); }
+    .veta-section--lg    { padding-block: var(--veta-space-9); }
+
+    /* ---------- Sticky nav ---------- */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 14, 17, 0.78);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      border-bottom: 1px solid var(--veta-strata);
+    }
+    .site-header .veta-header { border-bottom: 0; }
+    .brand-logo { height: 38px; width: auto; display: block; }
+    .nav-cluster { display: flex; align-items: center; gap: var(--veta-space-5); }
+    .nav-links { display: flex; align-items: center; gap: var(--veta-space-6); }
+    .nav-actions { display: flex; align-items: center; gap: var(--veta-space-3); }
+    .nav-toggle { display: none; }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .nav-actions .btn-label-long { display: none; }
+    }
+    @media (max-width: 560px) {
+      .nav-actions .veta-btn--secondary { display: none; }
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(1100px 520px at 78% -8%, rgba(232,146,58,0.12), transparent 60%),
+        radial-gradient(820px 480px at 6% 18%, rgba(61,214,196,0.07), transparent 55%),
+        var(--veta-rock);
+    }
+    /* faint strata grid behind the hero */
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0; z-index: -2;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(120% 90% at 50% 0%, #000 35%, transparent 78%);
+      -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, #000 35%, transparent 78%);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: var(--veta-space-8);
+      align-items: center;
+      padding-block: var(--veta-space-9) var(--veta-space-8);
+    }
+    @media (max-width: 940px) {
+      .hero-grid { grid-template-columns: 1fr; gap: var(--veta-space-7); padding-block: var(--veta-space-8) var(--veta-space-7); }
+    }
+    .hero-display {
+      font-size: clamp(2.6rem, 6vw, var(--veta-text-3xl));
+      margin-top: var(--veta-space-4);
+    }
+    .hero-sub { margin-top: var(--veta-space-5); font-size: var(--veta-text-md); }
+    .hero-cta { margin-top: var(--veta-space-6); }
+    .hero-trust {
+      margin-top: var(--veta-space-7);
+      display: flex; flex-direction: column; gap: var(--veta-space-3);
+    }
+    .hero-trust__label {
+      font-size: var(--veta-text-xs);
+      letter-spacing: var(--veta-track-label);
+      text-transform: uppercase;
+      color: var(--veta-text-faint);
+    }
+    .source-row { display: flex; flex-wrap: wrap; gap: var(--veta-space-2); }
+
+    .hero-visual {
+      position: relative;
+      width: 100%;
+    }
+    .hero-visual svg { width: 100%; height: auto; display: block; }
+    .hero-visual__frame {
+      border: 1px solid var(--veta-strata);
+      border-radius: var(--veta-radius-xl);
+      background: linear-gradient(160deg, rgba(29,37,48,0.6) 0%, rgba(11,14,17,0.6) 100%);
+      box-shadow: var(--veta-shadow-lg);
+      overflow: hidden;
+    }
+    .hero-visual__cap {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--veta-space-3);
+      padding: var(--veta-space-3) var(--veta-space-5);
+      border-top: 1px solid var(--veta-strata);
+      font-size: var(--veta-text-xs);
+      color: var(--veta-text-dim);
+      letter-spacing: 0.02em;
+    }
+
+    /* Animated seam draw-in */
+    .seam-draw {
+      stroke-dasharray: var(--len, 1400);
+      stroke-dashoffset: var(--len, 1400);
+      animation: drawSeam 2.4s var(--veta-ease-out) forwards;
+    }
+    @keyframes drawSeam { to { stroke-dashoffset: 0; } }
+    .pulse-node { animation: pulseNode 2.8s var(--veta-ease) infinite; transform-origin: center; transform-box: fill-box; }
+    @keyframes pulseNode {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .seam-draw { animation: none; stroke-dashoffset: 0; }
+      .pulse-node { animation: none; opacity: 1; }
+    }
+
+    /* ---------- Section heading block ---------- */
+    .sec-head { max-width: 760px; }
+    .sec-head .veta-h2 { margin-top: var(--veta-space-3); }
+    .sec-head .veta-lead { margin-top: var(--veta-space-4); }
+    .sec-head--center { margin-inline: auto; text-align: center; }
+    .sec-head--center .veta-kicker { justify-content: center; }
+    .sec-head--center .veta-lead { margin-inline: auto; }
+
+    /* ---------- Problem ---------- */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: var(--veta-space-7);
+      align-items: center;
+      margin-top: var(--veta-space-7);
+    }
+    @media (max-width: 860px) { .problem-grid { grid-template-columns: 1fr; } }
+    .pain-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--veta-space-4); }
+    .pain-list li {
+      display: flex; gap: var(--veta-space-4); align-items: flex-start;
+      color: var(--veta-text-muted);
+    }
+    .pain-list .x {
+      flex: none; width: 26px; height: 26px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--veta-danger-bg); color: var(--veta-danger);
+      font-size: var(--veta-text-sm); font-weight: var(--veta-weight-bold);
+      margin-top: 2px;
+    }
+    .pain-list strong { color: var(--veta-text); font-weight: var(--veta-weight-semi); }
+    .mirror-visual svg { width: 100%; height: auto; display: block; }
+
+    /* ---------- How it works ---------- */
+    .flow {
+      margin-top: var(--veta-space-7);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: var(--veta-space-5);
+      align-items: stretch;
+    }
+    @media (max-width: 940px) {
+      .flow { grid-template-columns: 1fr; }
+      .flow-arrow { transform: rotate(90deg); justify-self: center; }
+    }
+    .flow-step {
+      display: flex; flex-direction: column; gap: var(--veta-space-4);
+    }
+    .flow-num {
+      font-size: var(--veta-text-xs); font-weight: var(--veta-weight-bold);
+      letter-spacing: var(--veta-track-label); color: var(--veta-amber);
+    }
+    .flow-arrow {
+      display: grid; place-items: center; color: var(--veta-copper);
+      align-self: center;
+    }
+    .signal-list { list-style: none; margin: var(--veta-space-2) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--veta-space-3); }
+    .signal-list li {
+      display: flex; align-items: center; gap: var(--veta-space-3);
+      font-size: var(--veta-text-sm); color: var(--veta-text-muted);
+    }
+    .signal-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--veta-teal); box-shadow: var(--veta-glow-teal); }
+    .fusion-core {
+      display: grid; place-items: center; text-align: center; height: 100%;
+    }
+    .fusion-ring svg { width: 132px; height: 132px; }
+
+    /* ---------- Product preview ---------- */
+    .preview-frame {
+      margin-top: var(--veta-space-7);
+      border: 1px solid var(--veta-strata-2);
+      border-radius: var(--veta-radius-xl);
+      background: var(--veta-graphite);
+      box-shadow: var(--veta-shadow-lg);
+      overflow: hidden;
+    }
+    .preview-bar {
+      display: flex; align-items: center; gap: var(--veta-space-3);
+      padding: var(--veta-space-3) var(--veta-space-5);
+      border-bottom: 1px solid var(--veta-strata);
+      background: var(--veta-graphite-2);
+    }
+    .preview-dots { display: flex; gap: 7px; }
+    .preview-dots i { width: 11px; height: 11px; border-radius: 50%; background: var(--veta-strata-2); display: block; }
+    .preview-url {
+      flex: 1; text-align: center; font-family: var(--veta-font-mono);
+      font-size: var(--veta-text-xs); color: var(--veta-text-dim);
+      background: var(--veta-obsidian); border: 1px solid var(--veta-strata);
+      border-radius: var(--veta-radius-pill); padding: 4px 14px; max-width: 360px; margin-inline: auto;
+    }
+    .preview-body { padding: var(--veta-space-6); }
+    .dash-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--veta-space-5); }
+    @media (max-width: 760px) { .dash-grid { grid-template-columns: 1fr; } }
+    .dash-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--veta-space-4); margin-bottom: var(--veta-space-5); }
+    @media (max-width: 520px) { .dash-metrics { grid-template-columns: 1fr; } }
+    .dash-chart svg { width: 100%; height: auto; display: block; }
+    .dash-side { display: flex; flex-direction: column; gap: var(--veta-space-4); }
+    .dash-rowitem {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--veta-space-3);
+      padding-bottom: var(--veta-space-3); border-bottom: 1px solid var(--veta-strata);
+    }
+    .dash-rowitem:last-child { border-bottom: 0; padding-bottom: 0; }
+    .dash-rowitem .r-label { font-size: var(--veta-text-sm); color: var(--veta-text); }
+    .dash-rowitem .r-src { font-size: var(--veta-text-xs); color: var(--veta-text-dim); font-family: var(--veta-font-mono); }
+    .preview-actions { margin-top: var(--veta-space-6); display: flex; justify-content: center; }
+
+    /* ---------- Audience cards ---------- */
+    .audience-grid { margin-top: var(--veta-space-7); }
+    .aud-card { text-align: left; }
+    .aud-icon {
+      width: 48px; height: 48px; border-radius: var(--veta-radius-md);
+      display: grid; place-items: center; margin-bottom: var(--veta-space-4);
+      background: rgba(232,146,58,0.10); border: 1px solid rgba(232,146,58,0.22);
+    }
+    .aud-card h3 { font-size: var(--veta-text-lg); }
+    .aud-card p { margin-top: var(--veta-space-2); font-size: var(--veta-text-sm); color: var(--veta-text-muted); }
+    .aud-meta { margin-top: var(--veta-space-4); font-size: var(--veta-text-xs); color: var(--veta-text-dim); font-family: var(--veta-font-mono); letter-spacing: 0.02em; }
+
+    /* ---------- Why now ---------- */
+    .why-grid { margin-top: var(--veta-space-7); }
+    .why-card .why-no {
+      font-size: var(--veta-text-2xl); font-weight: var(--veta-weight-heavy);
+      letter-spacing: var(--veta-track-tight); line-height: 1;
+    }
+    .why-card h3 { margin-top: var(--veta-space-3); font-size: var(--veta-text-lg); }
+    .why-card p { margin-top: var(--veta-space-3); font-size: var(--veta-text-sm); color: var(--veta-text-muted); }
+
+    /* ---------- Market / vision ---------- */
+    .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--veta-space-7); align-items: center; margin-top: var(--veta-space-7); }
+    @media (max-width: 860px) { .market-grid { grid-template-columns: 1fr; } }
+    .market-steps { display: flex; flex-direction: column; gap: var(--veta-space-4); }
+    .market-step {
+      display: flex; gap: var(--veta-space-4); align-items: flex-start;
+      padding: var(--veta-space-5);
+      border: 1px solid var(--veta-strata); border-radius: var(--veta-radius-lg);
+      background: var(--veta-graphite);
+    }
+    .market-step .ms-stage {
+      flex: none; font-family: var(--veta-font-mono); font-size: var(--veta-text-xs);
+      color: var(--veta-amber); letter-spacing: 0.06em; padding-top: 3px; min-width: 58px;
+    }
+    .market-step h4 { font-size: var(--veta-text-base); }
+    .market-step p { margin-top: var(--veta-space-1); font-size: var(--veta-text-sm); color: var(--veta-text-muted); }
+
+    /* ---------- Edge (forecast vs leads) ---------- */
+    .edge-compare { margin-top: var(--veta-space-7); display: grid; grid-template-columns: 1fr 1fr; gap: var(--veta-space-5); }
+    @media (max-width: 760px) { .edge-compare { grid-template-columns: 1fr; } }
+    .edge-card h4 { display: flex; align-items: center; gap: var(--veta-space-3); }
+    .edge-card ul { list-style: none; margin: var(--veta-space-4) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--veta-space-3); }
+    .edge-card li { display: flex; gap: var(--veta-space-3); font-size: var(--veta-text-sm); color: var(--veta-text-muted); }
+    .edge-card li .mk { flex: none; font-weight: var(--veta-weight-bold); }
+    .edge-card--them .mk { color: var(--veta-text-faint); }
+    .edge-card--us .mk { color: var(--veta-teal); }
+    .edge-card--us { border-color: rgba(61,214,196,0.30); }
+
+    /* ---------- CTA band ---------- */
+    .cta-band {
+      position: relative; overflow: hidden; isolation: isolate;
+      border-radius: var(--veta-radius-xl);
+      border: 1px solid var(--veta-strata);
+      background:
+        radial-gradient(700px 320px at 80% 120%, rgba(232,146,58,0.16), transparent 60%),
+        var(--veta-rock);
+      padding: var(--veta-space-8);
+      text-align: center;
+    }
+    .cta-band::before {
+      content: ""; position: absolute; left: -10%; top: 42%; width: 130%; height: 2px;
+      transform: rotate(calc(-1 * var(--veta-seam-angle)));
+      background: linear-gradient(90deg, transparent 0%, var(--veta-copper-deep) 22%, var(--veta-amber) 52%, transparent 90%);
+      box-shadow: 0 0 22px 2px rgba(232,146,58,0.35);
+      z-index: -1;
+    }
+    .cta-band .veta-h2 { max-width: 640px; margin-inline: auto; }
+    .cta-band .veta-lead { margin-inline: auto; margin-top: var(--veta-space-4); }
+    .cta-band .veta-row { justify-content: center; margin-top: var(--veta-space-6); }
+
+    /* ---------- Footer ---------- */
+    .site-footer { border-top: 1px solid var(--veta-strata); padding-block: var(--veta-space-7); margin-top: var(--veta-space-8); }
+    .footer-grid { display: flex; align-items: center; justify-content: space-between; gap: var(--veta-space-5); flex-wrap: wrap; }
+    .footer-meta { font-size: var(--veta-text-sm); color: var(--veta-text-dim); }
+    .footer-meta strong { color: var(--veta-text-muted); font-weight: var(--veta-weight-semi); }
+    .footer-links { display: flex; gap: var(--veta-space-5); }
+    .footer-links a { color: var(--veta-text-dim); text-decoration: none; font-size: var(--veta-text-sm); }
+    .footer-links a:hover { color: var(--veta-text); }
+
+    /* shared seam glyph in headings */
+    .seam-tick { color: var(--veta-copper); }
+  </style>
+</head>
+
+<body class="veta">
+
+  <!-- ============================================================
+       1 · STICKY NAV
+       ============================================================ -->
+  <header class="site-header">
+    <div class="veta-container">
+      <div class="veta-header">
+        <a href="#top" class="veta-brand" aria-label="Veta — home">
+          <img class="brand-logo" src="assets/logo.svg" alt="Veta — demand intelligence" />
+        </a>
+        <div class="nav-cluster">
+          <nav class="nav-links" aria-label="Primary">
+            <a href="#problem">The problem</a>
+            <a href="#how">How it works</a>
+            <a href="#product">Product</a>
+            <a href="#why-now">Why now</a>
+            <a href="#market">Market</a>
+          </nav>
+          <div class="nav-actions">
+            <a class="veta-btn veta-btn--secondary" href="app/">View live product</a>
+            <a class="veta-btn veta-btn--primary" href="#access">Request access</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============================================================
+         2 · HERO — the seam becomes the forecast
+         ============================================================ -->
+    <section class="hero">
+      <div class="veta-container">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="veta-kicker">Demand intelligence · Latin American construction</span>
+            <h1 class="veta-display hero-display">
+              See demand <span class="veta-seam-text">before</span> it's an order.
+            </h1>
+            <p class="veta-lead hero-sub">
+              Veta fuses customs flows, public tenders, port manifests, satellite imagery, and a
+              field network into one forward demand forecast - so cement, steel, aluminum, and
+              paint makers plan against signal, not last quarter.
+            </p>
+            <div class="veta-row hero-cta">
+              <a class="veta-btn veta-btn--primary" href="#access">Request access</a>
+              <a class="veta-btn veta-btn--secondary" href="app/">Explore the live demo &rarr;</a>
+            </div>
+
+            <div class="hero-trust">
+              <span class="hero-trust__label">Five signals, one forecast</span>
+              <div class="source-row">
+                <span class="veta-badge veta-badge--neutral">Customs &middot; SIECA</span>
+                <span class="veta-badge veta-badge--neutral">Public tenders</span>
+                <span class="veta-badge veta-badge--neutral">Port manifests</span>
+                <span class="veta-badge veta-badge--neutral">Sentinel-2</span>
+                <span class="veta-badge veta-badge--neutral">Field network</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Signature visual: teal history bending into glowing-copper projection -->
+          <div class="hero-visual">
+            <div class="hero-visual__frame">
+              <svg viewBox="0 0 560 380" role="img" aria-label="A demand seam: mineral-teal history bending into a glowing copper forecast curve">
+                <defs>
+                  <linearGradient id="h-seam" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0" stop-color="#B85C1E"/>
+                    <stop offset="0.5" stop-color="#E8923A"/>
+                    <stop offset="1" stop-color="#FFC777"/>
+                  </linearGradient>
+                  <linearGradient id="h-fill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#E8923A" stop-opacity="0.28"/>
+                    <stop offset="1" stop-color="#E8923A" stop-opacity="0"/>
+                  </linearGradient>
+                  <linearGradient id="h-fill-teal" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#3DD6C4" stop-opacity="0.18"/>
+                    <stop offset="1" stop-color="#3DD6C4" stop-opacity="0"/>
+                  </linearGradient>
+                  <filter id="h-glow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="4" result="b"/>
+                    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
+                </defs>
+
+                <!-- strata gridlines -->
+                <g stroke="#2A323D" stroke-width="1">
+                  <line x1="0" y1="92"  x2="560" y2="92"/>
+                  <line x1="0" y1="168" x2="560" y2="168"/>
+                  <line x1="0" y1="244" x2="560" y2="244"/>
+                  <line x1="0" y1="320" x2="560" y2="320"/>
+                </g>
+                <!-- divider: now -->
+                <line x1="300" y1="24" x2="300" y2="344" stroke="#3A4654" stroke-width="1" stroke-dasharray="3 5"/>
+                <text x="300" y="362" fill="#5C6573" font-size="12" font-family="system-ui, sans-serif" text-anchor="middle" letter-spacing="2">NOW</text>
+                <text x="60"  y="362" fill="#5C6573" font-size="12" font-family="system-ui, sans-serif" letter-spacing="2">HISTORY</text>
+                <text x="500" y="362" fill="#FFC777" font-size="12" font-family="system-ui, sans-serif" text-anchor="end" letter-spacing="2">FORECAST</text>
+
+                <!-- teal history area -->
+                <path d="M20 290 L70 276 L120 286 L170 252 L220 262 L300 224 L300 344 L20 344 Z" fill="url(#h-fill-teal)"/>
+                <!-- copper forecast area -->
+                <path d="M300 224 C360 196 410 150 470 96 L540 60 L540 344 L300 344 Z" fill="url(#h-fill)"/>
+
+                <!-- the seam: teal history line that BECOMES the copper forecast -->
+                <path d="M20 290 L70 276 L120 286 L170 252 L220 262 L300 224"
+                      fill="none" stroke="#3DD6C4" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+                <g filter="url(#h-glow)">
+                  <path class="seam-draw" style="--len:360"
+                        d="M300 224 C360 196 410 150 470 96 L540 60"
+                        fill="none" stroke="url(#h-seam)" stroke-width="4" stroke-linecap="round"/>
+                </g>
+                <path d="M300 224 C360 196 410 150 470 96 L540 60"
+                      fill="none" stroke="#FFE0AE" stroke-width="1.1" stroke-linecap="round" opacity="0.85"/>
+
+                <!-- history data points (teal signal marks) -->
+                <g fill="#0B0E11" stroke="#3DD6C4" stroke-width="2">
+                  <circle cx="70" cy="276" r="3.4"/>
+                  <circle cx="170" cy="252" r="3.4"/>
+                  <circle cx="220" cy="262" r="3.4"/>
+                </g>
+                <!-- the inflection node where signal becomes forecast -->
+                <circle class="pulse-node" cx="300" cy="224" r="6" fill="#FFD79A" filter="url(#h-glow)"/>
+                <!-- forecast endpoint -->
+                <circle cx="540" cy="60" r="4.5" fill="#FFC777" filter="url(#h-glow)"/>
+
+                <!-- confidence band on forecast -->
+                <path d="M300 224 C360 184 410 134 470 80 L540 44"
+                      fill="none" stroke="#E8923A" stroke-width="1" stroke-dasharray="2 6" opacity="0.4"/>
+                <path d="M300 224 C360 208 410 166 470 112 L540 76"
+                      fill="none" stroke="#E8923A" stroke-width="1" stroke-dasharray="2 6" opacity="0.4"/>
+              </svg>
+              <div class="hero-visual__cap">
+                <span>Cement &middot; Petén region &middot; 6-month outlook</span>
+                <span class="veta-accent">&#9650; projected +14%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3 · THE PROBLEM
+         ============================================================ -->
+    <section class="veta-section" id="problem">
+      <div class="veta-container">
+        <div class="problem-grid">
+          <div>
+            <div class="sec-head">
+              <span class="veta-kicker">The problem</span>
+              <h2 class="veta-h2">Manufacturers forecast by the rear-view mirror.</h2>
+              <p class="veta-lead">
+                Demand in Latin American construction is real and valuable - but it's buried in
+                customs records, public tenders, port manifests, and satellite imagery that no one
+                has ever assembled into a single line. So planners fall back on what they can see:
+                last quarter's sales.
+              </p>
+            </div>
+            <ul class="pain-list" style="margin-top: var(--veta-space-6);">
+              <li><span class="x">&#10005;</span><span><strong>Lagging.</strong> Sales reports describe demand that already happened - the order is already placed, or already lost to a competitor.</span></li>
+              <li><span class="x">&#10005;</span><span><strong>Incomplete.</strong> A buyer stitches a syndicated PDF, free national stats, and a price feed into a picture that's stale before it's finished.</span></li>
+              <li><span class="x">&#10005;</span><span><strong>Coarse.</strong> The few forward forecasts that exist stop at the country level - useless for deciding which plant runs which SKU next month.</span></li>
+            </ul>
+          </div>
+
+          <!-- rear-view mirror visual: flat lagging line vs hidden upstream signal -->
+          <div class="mirror-visual veta-card veta-card--seam">
+            <svg viewBox="0 0 440 300" role="img" aria-label="A flat lagging report against demand already forming upstream">
+              <defs>
+                <linearGradient id="m-seam" x1="0" y1="1" x2="1" y2="0">
+                  <stop offset="0" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/>
+                </linearGradient>
+              </defs>
+              <text x="20" y="34" fill="#8B95A1" font-size="12" font-family="system-ui, sans-serif" letter-spacing="2">WHAT THEY SEE</text>
+              <!-- lagging flat line -->
+              <path d="M20 90 L120 86 L220 92 L320 88 L420 90" fill="none" stroke="#5C6573" stroke-width="2.4" stroke-linecap="round"/>
+              <g fill="#5C6573"><circle cx="120" cy="86" r="3"/><circle cx="220" cy="92" r="3"/><circle cx="320" cy="88" r="3"/></g>
+
+              <line x1="20" y1="150" x2="420" y2="150" stroke="#2A323D" stroke-width="1" stroke-dasharray="3 5"/>
+
+              <text x="20" y="196" fill="#FFC777" font-size="12" font-family="system-ui, sans-serif" letter-spacing="2">WHAT'S ALREADY FORMING</text>
+              <!-- rising hidden signal -->
+              <path d="M20 252 C120 248 200 230 300 196 L420 150" fill="none" stroke="url(#m-seam)" stroke-width="3" stroke-linecap="round" filter="url(#h-glow)"/>
+              <circle class="pulse-node" cx="420" cy="150" r="5" fill="#FFD79A"/>
+              <text x="412" y="278" fill="#5C6573" font-size="11" font-family="system-ui, sans-serif" text-anchor="end">months upstream &rarr; the order</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="veta-seam-line" />
+
+    <!-- ============================================================
+         4 · HOW IT WORKS — five signals -> fusion -> forecast
+         ============================================================ -->
+    <section class="veta-section" id="how">
+      <div class="veta-container">
+        <div class="sec-head sec-head--center">
+          <span class="veta-kicker">How it works</span>
+          <h2 class="veta-h2">Five signals in. One forward forecast out.</h2>
+          <p class="veta-lead">
+            We read the leading signals no one has assembled, fuse them in one engine, and follow
+            them forward to the order that hasn't been placed yet.
+          </p>
+        </div>
+
+        <div class="flow">
+          <!-- Step 1: signals -->
+          <div class="flow-step veta-card">
+            <span class="flow-num">01 / SIGNALS</span>
+            <h3 class="veta-h4">Five raw signals</h3>
+            <ul class="signal-list">
+              <li><span class="signal-dot"></span>Customs &amp; SIECA trade flows</li>
+              <li><span class="signal-dot"></span>Public tenders &mdash; GUATECOMPRAS, ONCAE, COMPRASAL</li>
+              <li><span class="signal-dot"></span>Port manifests</li>
+              <li><span class="signal-dot"></span>Sentinel-2 satellite imagery</li>
+              <li><span class="signal-dot"></span>WhatsApp field network</li>
+            </ul>
+          </div>
+
+          <div class="flow-arrow" aria-hidden="true">
+            <svg width="40" height="20" viewBox="0 0 40 20"><path d="M2 10 H34 M28 4 L36 10 L28 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+
+          <!-- Step 2: fusion engine -->
+          <div class="flow-step veta-card veta-card--seam">
+            <span class="flow-num" style="color: var(--veta-teal-soft);">02 / FUSION</span>
+            <div class="fusion-core">
+              <div class="fusion-ring">
+                <svg viewBox="0 0 132 132" role="img" aria-label="The Veta fusion engine">
+                  <defs>
+                    <linearGradient id="f-seam" x1="0" y1="1" x2="1" y2="0">
+                      <stop offset="0" stop-color="#B85C1E"/><stop offset="0.5" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="66" cy="66" r="52" fill="none" stroke="#2A323D" stroke-width="1"/>
+                  <circle cx="66" cy="66" r="38" fill="none" stroke="#2A323D" stroke-width="1"/>
+                  <!-- five inbound signal marks -->
+                  <g fill="#3DD6C4">
+                    <circle cx="66" cy="14" r="3"/><circle cx="115" cy="50" r="3"/>
+                    <circle cx="96" cy="108" r="3"/><circle cx="36" cy="108" r="3"/><circle cx="17" cy="50" r="3"/>
+                  </g>
+                  <g stroke="#3DD6C4" stroke-width="1" opacity="0.5">
+                    <line x1="66" y1="14" x2="66" y2="66"/><line x1="115" y1="50" x2="66" y2="66"/>
+                    <line x1="96" y1="108" x2="66" y2="66"/><line x1="36" y1="108" x2="66" y2="66"/><line x1="17" y1="50" x2="66" y2="66"/>
+                  </g>
+                  <circle class="pulse-node" cx="66" cy="66" r="13" fill="url(#f-seam)" filter="url(#h-glow)"/>
+                  <circle cx="66" cy="66" r="4" fill="#FFE0AE"/>
+                </svg>
+              </div>
+              <h3 class="veta-h4" style="margin-top: var(--veta-space-3);">The fusion engine</h3>
+              <p class="veta-muted" style="font-size: var(--veta-text-sm); max-width: 24ch;">Aligned to SKU, region, and month - cleaned, weighted, and modeled.</p>
+            </div>
+          </div>
+
+          <div class="flow-arrow" aria-hidden="true">
+            <svg width="40" height="20" viewBox="0 0 40 20"><path d="M2 10 H34 M28 4 L36 10 L28 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+
+          <!-- Step 3: forecast -->
+          <div class="flow-step veta-card">
+            <span class="flow-num">03 / FORECAST</span>
+            <h3 class="veta-h4">A forward demand forecast</h3>
+            <div class="dash-chart" aria-hidden="true">
+              <svg viewBox="0 0 240 120">
+                <defs>
+                  <linearGradient id="fc-seam" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/>
+                  </linearGradient>
+                </defs>
+                <line x1="0" y1="40" x2="240" y2="40" stroke="#2A323D"/>
+                <line x1="0" y1="80" x2="240" y2="80" stroke="#2A323D"/>
+                <path d="M8 86 L60 78 L112 82" fill="none" stroke="#3DD6C4" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M112 82 C150 66 180 40 232 22" fill="none" stroke="url(#fc-seam)" stroke-width="3" stroke-linecap="round" filter="url(#h-glow)"/>
+                <circle class="pulse-node" cx="112" cy="82" r="4.5" fill="#FFD79A"/>
+                <circle cx="232" cy="22" r="4" fill="#FFC777"/>
+              </svg>
+            </div>
+            <p class="veta-muted" style="font-size: var(--veta-text-sm);">
+              Structured, sourced, and quantified at the SKU / region / month grain - a number a
+              planner can act on. <strong style="color: var(--veta-text);">Not a lead list.</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5 · PRODUCT PREVIEW
+         ============================================================ -->
+    <section class="veta-section" id="product">
+      <div class="veta-container">
+        <div class="sec-head sec-head--center">
+          <span class="veta-kicker">Product</span>
+          <h2 class="veta-h2">The demand picture, in one screen.</h2>
+          <p class="veta-lead">
+            Forecasts by SKU, region, and month - each one traceable to the signals underneath it.
+          </p>
+        </div>
+
+        <div class="preview-frame">
+          <div class="preview-bar">
+            <span class="preview-dots"><i></i><i></i><i></i></span>
+            <span class="preview-url">app.veta.la / forecast / cement</span>
+          </div>
+          <div class="preview-body">
+            <div class="dash-metrics">
+              <div class="veta-metric">
+                <span class="veta-metric__label">Projected demand &middot; Q3</span>
+                <span class="veta-metric__value">182.4k t</span>
+                <span class="veta-metric__delta veta-metric__delta--up">&#9650; 14.2% vs Q2</span>
+              </div>
+              <div class="veta-metric">
+                <span class="veta-metric__label">Forecast confidence</span>
+                <span class="veta-metric__value">High</span>
+                <span class="veta-metric__delta veta-metric__delta--flat">5 signals aligned</span>
+              </div>
+              <div class="veta-metric">
+                <span class="veta-metric__label">Lead time vs orders</span>
+                <span class="veta-metric__value">~5 mo</span>
+                <span class="veta-metric__delta veta-metric__delta--up">&#9650; ahead of book</span>
+              </div>
+            </div>
+
+            <div class="dash-grid">
+              <!-- main chart -->
+              <div class="veta-chart">
+                <div class="veta-chart__head">
+                  <span class="veta-chart__title">Cement demand &middot; Central America</span>
+                  <div class="veta-chart__legend">
+                    <span><i style="background:var(--veta-teal)"></i>History</span>
+                    <span><i style="background:var(--veta-copper)"></i>Forecast</span>
+                  </div>
+                </div>
+                <div class="dash-chart">
+                  <svg viewBox="0 0 600 240" class="veta-chart__plot" role="img" aria-label="Cement demand history bending into forecast">
+                    <defs>
+                      <linearGradient id="p-seam" x1="0" y1="1" x2="1" y2="0">
+                        <stop offset="0" stop-color="#B85C1E"/><stop offset="0.5" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/>
+                      </linearGradient>
+                      <linearGradient id="p-fill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#E8923A" stop-opacity="0.22"/><stop offset="1" stop-color="#E8923A" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <g stroke="#2A323D" stroke-width="1">
+                      <line x1="0" y1="60" x2="600" y2="60"/><line x1="0" y1="120" x2="600" y2="120"/><line x1="0" y1="180" x2="600" y2="180"/>
+                    </g>
+                    <line x1="350" y1="16" x2="350" y2="208" stroke="#3A4654" stroke-width="1" stroke-dasharray="3 5"/>
+                    <text x="358" y="28" fill="#5C6573" font-size="11" font-family="system-ui, sans-serif">now</text>
+                    <path d="M350 150 C420 124 480 86 560 44 L560 208 L350 208 Z" fill="url(#p-fill)"/>
+                    <path d="M20 176 L90 168 L160 178 L230 150 L290 162 L350 150" fill="none" stroke="#3DD6C4" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M350 150 C420 124 480 86 560 44" fill="none" stroke="url(#p-seam)" stroke-width="3.4" stroke-linecap="round" filter="url(#h-glow)"/>
+                    <g fill="#0B0E11" stroke="#3DD6C4" stroke-width="2"><circle cx="90" cy="168" r="3.2"/><circle cx="230" cy="150" r="3.2"/></g>
+                    <circle class="pulse-node" cx="350" cy="150" r="5.5" fill="#FFD79A" filter="url(#h-glow)"/>
+                    <circle cx="560" cy="44" r="4.5" fill="#FFC777" filter="url(#h-glow)"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- signal contribution side panel -->
+              <div class="veta-card dash-side">
+                <span class="veta-metric__label">Signals driving this forecast</span>
+                <div class="dash-rowitem">
+                  <span class="r-label">Tenders awarded &#9650;</span>
+                  <span class="r-src">GUATECOMPRAS</span>
+                </div>
+                <div class="dash-rowitem">
+                  <span class="r-label">Cement imports &#9650;</span>
+                  <span class="r-src">SIECA</span>
+                </div>
+                <div class="dash-rowitem">
+                  <span class="r-label">New site starts &#9650;</span>
+                  <span class="r-src">Sentinel-2</span>
+                </div>
+                <div class="dash-rowitem">
+                  <span class="r-label">Bagged-cement pull &#9650;</span>
+                  <span class="r-src">Field network</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="preview-actions">
+              <a class="veta-btn veta-btn--primary" href="app/">Explore the live demo &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="veta-seam-line" />
+
+    <!-- ============================================================
+         6 · WHO IT'S FOR
+         ============================================================ -->
+    <section class="veta-section" id="who">
+      <div class="veta-container">
+        <div class="sec-head sec-head--center">
+          <span class="veta-kicker">Who it's for</span>
+          <h2 class="veta-h2">Built for the people who plan production.</h2>
+          <p class="veta-lead">
+            Building-materials manufacturers selling into Latin America - where a sharper forecast
+            decides which plant runs which SKU, and at what price.
+          </p>
+        </div>
+
+        <div class="veta-grid veta-grid--4 audience-grid">
+          <!-- Cement -->
+          <div class="veta-card aud-card">
+            <span class="aud-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFC777" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9 L12 5 L20 9 L12 13 Z"/><path d="M4 9 V15 L12 19 L20 15 V9"/><path d="M12 13 V19"/></svg>
+            </span>
+            <h3 class="veta-h4">Cement</h3>
+            <p>Match kiln output and clinker runs to demand forming across regions and tenders.</p>
+            <div class="aud-meta">bagged &middot; bulk &middot; ready-mix</div>
+          </div>
+          <!-- Steel -->
+          <div class="veta-card aud-card">
+            <span class="aud-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFC777" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6 H20 M4 12 H20 M4 18 H20" /><path d="M8 6 V18 M16 6 V18"/></svg>
+            </span>
+            <h3 class="veta-h4">Steel</h3>
+            <p>Plan rebar and structural volumes against projects entering the build phase upstream.</p>
+            <div class="aud-meta">rebar &middot; structural &middot; wire</div>
+          </div>
+          <!-- Aluminum -->
+          <div class="veta-card aud-card">
+            <span class="aud-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFC777" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10 H20 M10 10 V20"/></svg>
+            </span>
+            <h3 class="veta-h4">Aluminum</h3>
+            <p>Anticipate extrusion and facade demand as commercial starts show up in the signal.</p>
+            <div class="aud-meta">extrusion &middot; sheet &middot; facade</div>
+          </div>
+          <!-- Paint -->
+          <div class="veta-card aud-card">
+            <span class="aud-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFC777" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="8" rx="1.5"/><path d="M19 7 H21 V12 L14 14 V18"/><rect x="11" y="18" width="6" height="3" rx="1"/></svg>
+            </span>
+            <h3 class="veta-h4">Paint &amp; coatings</h3>
+            <p>Read the finishing-phase pull that lags structure - and stock the right SKUs for it.</p>
+            <div class="aud-meta">architectural &middot; protective</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         7 · WHY NOW
+         ============================================================ -->
+    <section class="veta-section veta-seam-field" id="why-now">
+      <div class="veta-container">
+        <div class="sec-head sec-head--center">
+          <span class="veta-kicker">Why now</span>
+          <h2 class="veta-h2">Three forces just converged.</h2>
+          <p class="veta-lead">
+            The forecast was impossible to build a few years ago. It isn't anymore.
+          </p>
+        </div>
+
+        <div class="veta-grid veta-grid--3 why-grid">
+          <div class="veta-card veta-card--seam why-card">
+            <div class="why-no veta-seam-text">01</div>
+            <h3 class="veta-h4">Data finally machine-readable</h3>
+            <p>Customs portals, open-contracting tender feeds, and free Sentinel-2 imagery became
+               queryable at the same time. The raw signal is now reachable - it just isn't assembled.</p>
+          </div>
+          <div class="veta-card veta-card--seam why-card">
+            <div class="why-no veta-seam-text">02</div>
+            <h3 class="veta-h4">AI can fuse it</h3>
+            <p>Modern models read satellite masks, parse messy tender text, and align mismatched
+               sources into one coherent forecast - work that was manually impossible at this scale.</p>
+          </div>
+          <div class="veta-card veta-card--seam why-card">
+            <div class="why-no veta-seam-text">03</div>
+            <h3 class="veta-h4">Volatility makes it urgent</h3>
+            <p>Latin American construction demand swings hard on tenders, trade, and cycles. Planning
+               against last quarter is more expensive than it has ever been.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         8 · MARKET / VISION
+         ============================================================ -->
+    <section class="veta-section" id="market">
+      <div class="veta-container">
+        <div class="market-grid">
+          <div class="sec-head">
+            <span class="veta-kicker">Market &amp; vision</span>
+            <h2 class="veta-h2">Start at the seam. Follow it across the region.</h2>
+            <p class="veta-lead">
+              No one sells a structured, forward, sub-country construction-demand signal for Latin
+              America - the only product that does this anywhere is US-only. We start where the
+              signal is richest and the incumbents are thinnest, then expand outward.
+            </p>
+            <p class="veta-body" style="margin-top: var(--veta-space-5);">
+              The model extends naturally: more materials, more countries, more grain. Each new
+              signal makes every forecast sharper - the seam runs on, beyond what you can see.
+            </p>
+          </div>
+
+          <div class="market-steps">
+            <div class="market-step">
+              <span class="ms-stage">BEACHHEAD</span>
+              <div>
+                <h4 class="veta-h4">Central America cement</h4>
+                <p>Richest open tender + customs data, thinnest incumbent coverage. The cleanest place to prove the forecast.</p>
+              </div>
+            </div>
+            <div class="market-step">
+              <span class="ms-stage">EXPAND</span>
+              <div>
+                <h4 class="veta-h4">More materials, more countries</h4>
+                <p>Steel, aluminum, and paint across the broader Latin American manufacturer base.</p>
+              </div>
+            </div>
+            <div class="market-step">
+              <span class="ms-stage">DEEPEN</span>
+              <div>
+                <h4 class="veta-h4">Finer grain, more signals</h4>
+                <p>SKU, region, and month resolution sharpened as new signals join the fusion engine.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="veta-muted" style="font-size: var(--veta-text-xs); margin-top: var(--veta-space-6); text-align: center;">
+          Grupo AG is the launch partner - a channel-data wedge, not the sole customer. Market figures are directional.
+        </p>
+      </div>
+    </section>
+
+    <hr class="veta-seam-line" />
+
+    <!-- ============================================================
+         9 · THE HONEST EDGE — forecast vs leads
+         ============================================================ -->
+    <section class="veta-section" id="edge">
+      <div class="veta-container">
+        <div class="sec-head sec-head--center">
+          <span class="veta-kicker">The honest edge</span>
+          <h2 class="veta-h2">We sell the forecast, not the lead list.</h2>
+          <p class="veta-lead">
+            Project-lead tools tell you who's building so you can chase the sale. Veta tells you how
+            much you'll need to make - the number a planner acts on.
+          </p>
+        </div>
+
+        <div class="edge-compare">
+          <div class="veta-card edge-card edge-card--them">
+            <h4 class="veta-h4"><span class="veta-badge veta-badge--neutral">Lead lists</span></h4>
+            <ul>
+              <li><span class="mk">&middot;</span><span>A list of projects and contacts to chase</span></li>
+              <li><span class="mk">&middot;</span><span>Answers "who is building?"</span></li>
+              <li><span class="mk">&middot;</span><span>Feeds the sales team after demand exists</span></li>
+              <li><span class="mk">&middot;</span><span>Backward-looking by construction</span></li>
+            </ul>
+          </div>
+          <div class="veta-card veta-card--seam edge-card edge-card--us">
+            <h4 class="veta-h4"><span class="veta-badge veta-badge--teal veta-badge--dot">Veta forecast</span></h4>
+            <ul>
+              <li><span class="mk">&#10003;</span><span>A quantified number by SKU, region, and month</span></li>
+              <li><span class="mk">&#10003;</span><span>Answers "how much will we need to make?"</span></li>
+              <li><span class="mk">&#10003;</span><span>Feeds production, inventory, and pricing before the order</span></li>
+              <li><span class="mk">&#10003;</span><span>Forward-looking by design</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         10 · CTA BAND + FOOTER
+         ============================================================ -->
+    <section class="veta-section" id="access">
+      <div class="veta-container">
+        <div class="cta-band">
+          <span class="veta-kicker" style="justify-content:center;">Request access</span>
+          <h2 class="veta-h2" style="margin-top: var(--veta-space-3);">See the demand before your competitors see the order.</h2>
+          <p class="veta-lead">
+            We're onboarding a small set of building-materials manufacturers. Tell us what you make
+            and where you sell - we'll show you the forecast on your own SKUs.
+          </p>
+          <div class="veta-row">
+            <a class="veta-btn veta-btn--primary" href="mailto:hello@veta.la?subject=Veta%20access%20request">Request access</a>
+            <a class="veta-btn veta-btn--secondary" href="app/">Explore the live demo &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="veta-container">
+      <div class="footer-grid">
+        <div class="footer-meta">
+          <div class="veta-brand" style="font-size: var(--veta-text-base);">
+            <img src="assets/logo-mark.svg" alt="" width="28" height="28" style="border-radius:8px;" />
+            VETA
+          </div>
+          <p style="margin: var(--veta-space-3) 0 0;">Follow the seam to the demand.</p>
+          <p style="margin: var(--veta-space-2) 0 0;"><strong>An InnovArise / Grupo AG venture</strong></p>
+        </div>
+        <nav class="footer-links" aria-label="Footer">
+          <a href="#how">How it works</a>
+          <a href="#product">Product</a>
+          <a href="#market">Market</a>
+          <a href="app/">Live product</a>
+          <a href="mailto:hello@veta.la?subject=Veta%20access%20request">Request access</a>
+        </nav>
+      </div>
+      <p class="veta-muted" style="font-size: var(--veta-text-xs); margin-top: var(--veta-space-6);">
+        &copy; 2026 Veta. Demand intelligence for Latin American construction.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

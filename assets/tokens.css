@@ -1,0 +1,153 @@
+/* ============================================================
+   VETA — DESIGN TOKENS
+   The demand-intelligence layer for Latin American construction.
+   "Follow the seam to the demand."
+
+   Self-contained: no @import, no webfonts, no remote assets.
+   Production brand font is DM Sans (Alloy house font) — documented
+   here but NOT imported. The system stack below renders DM Sans-
+   adjacent geometry on every OS with zero network requests.
+   ============================================================ */
+
+:root {
+  /* ---------------------------------------------------------
+     1. COLOR — the metaphor: value mined from dark material,
+        read by a cool intelligence.
+     --------------------------------------------------------- */
+
+  /* The rock — obsidian / graphite grounds, warm-biased neutrals */
+  --veta-obsidian:      #0B0E11;  /* deepest ground / page bg            */
+  --veta-graphite:      #161B22;  /* primary surface / card bg           */
+  --veta-graphite-2:    #1D2530;  /* raised surface / hover              */
+  --veta-strata:        #2A323D;  /* hairline borders, dividers          */
+  --veta-strata-2:      #3A4654;  /* stronger borders, inactive strokes  */
+
+  /* The vein — molten copper into amber. PRIMARY accent. */
+  --veta-copper-deep:   #B85C1E;  /* deep end of the vein                */
+  --veta-copper:        #E8923A;  /* primary accent — the vein           */
+  --veta-amber:         #FFC777;  /* bright end / glow                   */
+  --veta-amber-soft:    #FFE0AE;  /* luminous core highlight             */
+
+  /* The signal — mineral teal. SECONDARY accent (data marks). */
+  --veta-teal-deep:     #18928A;
+  --veta-teal:          #3DD6C4;  /* secondary accent — data / links     */
+  --veta-teal-soft:     #8FF0E5;
+
+  /* Text — quartz neutrals, warm-biased */
+  --veta-text:          #F4F1EC;  /* high-emphasis text                  */
+  --veta-text-muted:    #B6BCC5;  /* secondary text                      */
+  --veta-text-dim:      #8B95A1;  /* labels, captions, axes              */
+  --veta-text-faint:    #5C6573;  /* disabled / watermark                */
+
+  /* Semantic — distinct from the accent hues */
+  --veta-success:       #4ADE80;
+  --veta-success-bg:    rgba(74, 222, 128, 0.12);
+  --veta-warn:          #F5B544;
+  --veta-warn-bg:       rgba(245, 181, 68, 0.12);
+  --veta-danger:        #F26D6D;
+  --veta-danger-bg:     rgba(242, 109, 109, 0.12);
+  --veta-info:          var(--veta-teal);
+  --veta-info-bg:       rgba(61, 214, 196, 0.12);
+
+  /* The seam — reusable gradient signatures */
+  --veta-seam:          linear-gradient(135deg, #B85C1E 0%, #E8923A 45%, #FFC777 100%);
+  --veta-seam-soft:     linear-gradient(135deg, rgba(232,146,58,0) 0%, #E8923A 50%, rgba(255,199,119,0) 100%);
+  --veta-signal:        linear-gradient(135deg, #18928A 0%, #3DD6C4 100%);
+  --veta-rock:          linear-gradient(160deg, #1B222B 0%, #0B0E11 100%);
+
+  /* On-accent text (for filled copper buttons) */
+  --veta-on-accent:     #20140A;
+
+  /* ---------------------------------------------------------
+     2. TYPOGRAPHY
+        Production: DM Sans (do NOT @import in self-contained files).
+        Shipped: refined system stack.
+     --------------------------------------------------------- */
+  --veta-font-sans:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --veta-font-mono:
+    ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  /* --veta-font-prod: "DM Sans" — production brand face, loaded via app pipeline only */
+
+  /* Type scale — 1.250 (major third), 16px base */
+  --veta-text-xs:    0.75rem;   /* 12px — micro-labels       */
+  --veta-text-sm:    0.875rem;  /* 14px — captions, table    */
+  --veta-text-base:  1rem;      /* 16px — body               */
+  --veta-text-md:    1.125rem;  /* 18px — lead body          */
+  --veta-text-lg:    1.5rem;    /* 24px — h4 / card title    */
+  --veta-text-xl:    1.953rem;  /* ~31px — h3                */
+  --veta-text-2xl:   2.441rem;  /* ~39px — h2                */
+  --veta-text-3xl:   3.815rem;  /* ~61px — display / hero    */
+
+  --veta-weight-regular: 400;
+  --veta-weight-medium:  500;
+  --veta-weight-semi:    600;
+  --veta-weight-bold:    700;
+  --veta-weight-heavy:   800;
+
+  --veta-leading-tight:  1.1;
+  --veta-leading-snug:   1.3;
+  --veta-leading-normal: 1.6;
+
+  --veta-track-tight:    -0.02em;  /* display headings            */
+  --veta-track-normal:   0;
+  --veta-track-label:    0.14em;   /* uppercase eyebrows / kickers */
+
+  --veta-measure:        65ch;     /* body line length            */
+
+  /* ---------------------------------------------------------
+     3. SPACING — 4px base scale
+     --------------------------------------------------------- */
+  --veta-space-1:  0.25rem;   /* 4  */
+  --veta-space-2:  0.5rem;    /* 8  */
+  --veta-space-3:  0.75rem;   /* 12 */
+  --veta-space-4:  1rem;      /* 16 */
+  --veta-space-5:  1.5rem;    /* 24 */
+  --veta-space-6:  2rem;      /* 32 */
+  --veta-space-7:  3rem;      /* 48 */
+  --veta-space-8:  4rem;      /* 64 */
+  --veta-space-9:  6rem;      /* 96 */
+
+  /* ---------------------------------------------------------
+     4. RADII
+     --------------------------------------------------------- */
+  --veta-radius-sm:   6px;
+  --veta-radius-md:   10px;
+  --veta-radius-lg:   16px;
+  --veta-radius-xl:   24px;
+  --veta-radius-pill: 999px;
+
+  /* ---------------------------------------------------------
+     5. SHADOWS & GLOW
+        Soft on dark grounds; the copper glow is the signature.
+     --------------------------------------------------------- */
+  --veta-shadow-sm:  0 1px 2px rgba(0,0,0,0.4);
+  --veta-shadow-md:  0 4px 16px rgba(0,0,0,0.45);
+  --veta-shadow-lg:  0 16px 48px rgba(0,0,0,0.55);
+  --veta-glow-seam:  0 0 0 1px rgba(232,146,58,0.35), 0 0 24px rgba(232,146,58,0.28);
+  --veta-glow-teal:  0 0 0 1px rgba(61,214,196,0.35), 0 0 24px rgba(61,214,196,0.22);
+
+  /* ---------------------------------------------------------
+     6. MOTION
+     --------------------------------------------------------- */
+  --veta-ease:        cubic-bezier(0.4, 0, 0.2, 1);
+  --veta-ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --veta-dur-fast:    120ms;
+  --veta-dur-base:    220ms;
+  --veta-dur-slow:    420ms;
+
+  /* ---------------------------------------------------------
+     7. LAYOUT
+     --------------------------------------------------------- */
+  --veta-container:   1120px;
+  --veta-seam-angle:  22deg;   /* the signature seam angle */
+}
+
+/* Honor reduced-motion globally */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --veta-dur-fast: 0ms;
+    --veta-dur-base: 0ms;
+    --veta-dur-slow: 0ms;
+  }
+}
