@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Veta — Logo Mark Concepts</title>
+<meta name="description" content="Three redesigned brand-mark concepts for Veta, the demand-intelligence layer for Latin American construction." />
+<style>
+  :root{
+    --obsidian:#0B0E11; --graphite:#161B22; --graphite2:#1D2530;
+    --strata:#2A323D; --strata2:#3A4654;
+    --copper-deep:#B85C1E; --copper:#E8923A; --amber:#FFC777; --amber-soft:#FFE0AE;
+    --teal-deep:#18928A; --teal:#3DD6C4; --teal-soft:#8FF0E5;
+    --text:#F4F1EC; --muted:#B6BCC5; --dim:#8B95A1; --faint:#5C6573;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--obsidian);color:var(--text);font-family:var(--sans);
+       line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1120px;margin:0 auto;padding:64px 32px 96px;}
+
+  .kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--copper);
+          font-weight:600;margin:0 0 12px;}
+  h1{font-size:clamp(34px,5vw,56px);font-weight:800;letter-spacing:-0.02em;margin:0 0 16px;line-height:1.05;}
+  .lede{font-size:18px;color:var(--muted);max-width:62ch;margin:0 0 8px;}
+  .lede b{color:var(--text);font-weight:600;}
+  .seamrule{height:2px;width:100%;margin:40px 0 56px;border:0;
+            background:linear-gradient(90deg,rgba(232,146,58,0) 0%,#E8923A 35%,#FFC777 60%,rgba(255,199,119,0) 100%);}
+
+  .concept{margin:0 0 80px;}
+  .concept__head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin:0 0 8px;}
+  .concept__num{font-family:var(--mono);font-size:13px;color:var(--faint);letter-spacing:.1em;}
+  .concept__name{font-size:26px;font-weight:700;letter-spacing:-0.01em;margin:0;}
+  .concept__tag{font-size:13px;color:var(--teal);letter-spacing:.04em;}
+  .badge{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+         font-weight:700;padding:3px 9px;border-radius:999px;}
+  .badge--win{background:rgba(232,146,58,.14);color:var(--amber);border:1px solid rgba(232,146,58,.4);}
+  .badge--alt{background:rgba(61,214,196,.10);color:var(--teal);border:1px solid rgba(61,214,196,.28);}
+
+  .rationale{color:var(--muted);max-width:74ch;margin:14px 0 28px;font-size:15.5px;}
+  .rationale b{color:var(--text);font-weight:600;}
+  .rationale .fav{color:var(--teal-soft);font-weight:600;}
+
+  /* Specimen grid: dark panel + light panel, each with large + favicon scale */
+  .specimens{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:760px){.specimens{grid-template-columns:1fr}}
+  .panel{border-radius:16px;padding:32px;border:1px solid var(--strata);position:relative;overflow:hidden;}
+  .panel--dark{background:linear-gradient(160deg,#1B222B 0%,#0B0E11 100%);}
+  .panel--light{background:#F4F1EC;border-color:#E2DCD0;}
+  .panel__label{position:absolute;top:14px;right:16px;font-size:10px;letter-spacing:.14em;
+                text-transform:uppercase;font-weight:700;}
+  .panel--dark .panel__label{color:var(--faint);}
+  .panel--light .panel__label{color:#9A8F7C;}
+
+  .lockup{display:flex;align-items:center;gap:18px;margin-bottom:26px;}
+  .lockup__mark{width:64px;height:64px;flex:0 0 64px;}
+  .word{font-size:40px;font-weight:800;letter-spacing:.04em;line-height:1;}
+  .panel--dark .word{color:var(--text);}
+  .panel--light .word{color:#16110B;}
+
+  .scales{display:flex;align-items:flex-end;gap:22px;}
+  .scale{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .scale svg{display:block;}
+  .scale__cap{font-size:10px;letter-spacing:.1em;text-transform:uppercase;}
+  .panel--dark .scale__cap{color:var(--faint);}
+  .panel--light .scale__cap{color:#9A8F7C;}
+  .mono-row{display:flex;align-items:flex-end;gap:22px;margin-top:24px;padding-top:22px;border-top:1px dashed var(--strata);}
+  .panel--light .mono-row{border-top-color:#E2DCD0;}
+
+  .note{font-size:13px;color:var(--dim);max-width:74ch;margin:30px 0 0;padding:16px 20px;
+        background:var(--graphite);border-left:2px solid var(--copper);border-radius:0 8px 8px 0;}
+  .note b{color:var(--text);}
+  footer{margin-top:64px;padding-top:28px;border-top:1px solid var(--strata);color:var(--dim);font-size:13px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">Veta · Brand mark · Board review</p>
+  <h1>Three marks for the seam that becomes a forecast</h1>
+  <p class="lede">Veta means an ore <b>vein / seam</b> — the hidden line you follow to the value. The product fuses fragmented signals into a forward <b>demand forecast</b>. The mark should say that in one stroke, read at favicon size, and survive in a single color. Each concept below appears as a lockup and at large + 16&nbsp;px scale, on dark and on light.</p>
+  <hr class="seamrule" />
+
+  <!-- =================================================================
+       CONCEPT 1 — THE SEAM FORECAST  (CHOSEN)
+       A single line: flat history, then an inflection rising into forecast.
+       The bend forms an implicit V-valley. The seam IS the forecast.
+       ================================================================= -->
+  <section class="concept">
+    <div class="concept__head">
+      <span class="concept__num">01</span>
+      <h2 class="concept__name">Seam Forecast</h2>
+      <span class="concept__tag">the seam IS the forecast</span>
+      <span class="badge badge--win">Chosen — new official mark</span>
+    </div>
+    <p class="rationale">
+      One continuous luminous line. It runs <b>flat and dim on the left</b> (history, buried in the rock),
+      strikes a sharp <b>inflection</b>, and rises <b>copper-to-amber on the right</b> (demand projected forward).
+      The bend reads as an implicit <b>V</b>-valley — the name — and the rising arm is literally the demand curve
+      from the tagline, <b>“See demand before it’s an order.”</b> A teal signal node marks the inflection: the
+      moment the seam stops describing the past and starts predicting. One idea, one gesture, nothing decorative.
+      <span class="fav">Favicon viability:</span> a single bent line with a node — the strongest read at 16&nbsp;px of the three, and the only one that still says “forecast,” not just “V,” when tiny.
+    </p>
+    <div class="specimens">
+      <div class="panel panel--dark">
+        <span class="panel__label">On obsidian</span>
+        <div class="lockup">
+          <div class="lockup__mark"><svg viewBox="0 0 64 64" width="64" height="64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc1" x1="28" y1="46" x2="56" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.5" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M8 43 L28 46" fill="none" stroke="#3A4654" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><g filter="url(#glowc1)"><path d="M28 46 L56 12" fill="none" stroke="url(#seamc1)" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M28 46 L56 12" fill="none" stroke="#FFE0AE" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/><circle cx="28" cy="46" r="4.4" fill="#0B0E11"/><circle cx="28" cy="46" r="3.2" fill="#3DD6C4"/></svg></div>
+          <span class="word">VETA</span>
+        </div>
+        <div class="mono-row">
+          <div class="scale"><div style="width:48px;height:48px"><svg viewBox="0 0 64 64" width="48" height="48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc3" x1="28" y1="46" x2="56" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.5" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc3" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M8 43 L28 46" fill="none" stroke="#3A4654" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><g filter="url(#glowc3)"><path d="M28 46 L56 12" fill="none" stroke="url(#seamc3)" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M28 46 L56 12" fill="none" stroke="#FFE0AE" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/><circle cx="28" cy="46" r="4.4" fill="#0B0E11"/><circle cx="28" cy="46" r="3.2" fill="#3DD6C4"/></svg></div><span class="scale__cap">48 px</span></div>
+          <div class="scale"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc4" x1="28" y1="46" x2="56" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.5" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc4" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M8 43 L28 46" fill="none" stroke="#3A4654" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><g filter="url(#glowc4)"><path d="M28 46 L56 12" fill="none" stroke="url(#seamc4)" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M28 46 L56 12" fill="none" stroke="#FFE0AE" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/><circle cx="28" cy="46" r="4.4" fill="#0B0E11"/><circle cx="28" cy="46" r="3.2" fill="#3DD6C4"/></svg></div><span class="scale__cap">32 px</span></div>
+          <div class="scale"><div style="width:16px;height:16px"><svg viewBox="0 0 64 64" width="16" height="16" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc5" x1="28" y1="46" x2="56" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.5" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc5" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M8 43 L28 46" fill="none" stroke="#3A4654" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><g filter="url(#glowc5)"><path d="M28 46 L56 12" fill="none" stroke="url(#seamc5)" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M28 46 L56 12" fill="none" stroke="#FFE0AE" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/><circle cx="28" cy="46" r="4.4" fill="#0B0E11"/><circle cx="28" cy="46" r="3.2" fill="#3DD6C4"/></svg></div><span class="scale__cap">16 px favicon</span></div>
+        </div>
+      </div>
+      <div class="panel panel--light">
+        <span class="panel__label">On quartz</span>
+        <div class="lockup">
+          <div class="lockup__mark"><svg viewBox="0 0 64 64" width="64" height="64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc2" x1="28" y1="46" x2="56" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.5" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M8 43 L28 46" fill="none" stroke="#C9C0AE" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><g filter="url(#glowc2)"><path d="M28 46 L56 12" fill="none" stroke="url(#seamc2)" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M28 46 L56 12" fill="none" stroke="#FFE0AE" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/><circle cx="28" cy="46" r="4.4" fill="#F4F1EC"/><circle cx="28" cy="46" r="3.2" fill="#3DD6C4"/></svg></div>
+          <span class="word">VETA</span>
+        </div>
+        <div class="mono-row">
+          <div class="scale"><div style="width:48px;height:48px"><svg viewBox="0 0 64 64" width="48" height="48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc6" x1="28" y1="46" x2="56" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.5" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc6" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M8 43 L28 46" fill="none" stroke="#C9C0AE" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><g filter="url(#glowc6)"><path d="M28 46 L56 12" fill="none" stroke="url(#seamc6)" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M28 46 L56 12" fill="none" stroke="#FFE0AE" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/><circle cx="28" cy="46" r="4.4" fill="#F4F1EC"/><circle cx="28" cy="46" r="3.2" fill="#3DD6C4"/></svg></div><span class="scale__cap">48 px</span></div>
+          <div class="scale"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc7" x1="28" y1="46" x2="56" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.5" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc7" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M8 43 L28 46" fill="none" stroke="#C9C0AE" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><g filter="url(#glowc7)"><path d="M28 46 L56 12" fill="none" stroke="url(#seamc7)" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M28 46 L56 12" fill="none" stroke="#FFE0AE" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/><circle cx="28" cy="46" r="4.4" fill="#F4F1EC"/><circle cx="28" cy="46" r="3.2" fill="#3DD6C4"/></svg></div><span class="scale__cap">32 px</span></div>
+          <div class="scale"><div style="width:16px;height:16px"><svg viewBox="0 0 64 64" width="16" height="16" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><path d="M8 43 L28 46" fill="none" stroke="#16110B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/><path d="M28 46 L56 12" fill="none" stroke="#16110B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28" cy="46" r="4.6" fill="#F4F1EC"/><circle cx="28" cy="46" r="3" fill="#16110B"/></svg></div><span class="scale__cap">monochrome</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       CONCEPT 2 — STRATA V  (runner-up)
+       A geometric V monogram built from diverging strata, split by a seam.
+       ================================================================= -->
+  <section class="concept">
+    <div class="concept__head">
+      <span class="concept__num">02</span>
+      <h2 class="concept__name">Strata V</h2>
+      <span class="concept__tag">a seam splitting rock into a V</span>
+      <span class="badge badge--alt">Runner-up</span>
+    </div>
+    <p class="rationale">
+      A crisp geometric <b>V</b> formed by two layers of <b>strata</b> (offset rock bands). A single copper seam
+      runs down the cleft where the layers diverge — rock split open to expose the vein. More overtly a letter-mark
+      than concept 01, so it ties hard to “Veta,” and the strata give it a materials/geology read that suits
+      construction. <span class="fav">Favicon viability:</span> strong as a solid V silhouette; the seam thins to
+      a hairline at 16&nbsp;px but the V holds. Reads more as “a brand V” than “a forecast,” which is why it places second.
+    </p>
+    <div class="specimens">
+      <div class="panel panel--dark">
+        <span class="panel__label">On obsidian</span>
+        <div class="lockup">
+          <div class="lockup__mark"><svg viewBox="0 0 64 64" width="64" height="64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc9" x1="32" y1="50" x2="32" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.55" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc9" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M12 13 L32 53 L52 13 L42 13 L32 38 L22 13 Z" fill="#3A4654"/><g filter="url(#glowc9)"><path d="M32 12 L32 50" fill="none" stroke="url(#seamc9)" stroke-width="4.2" stroke-linecap="round"/></g><path d="M32 12 L32 50" fill="none" stroke="#FFE0AE" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/></svg></div>
+          <span class="word">VETA</span>
+        </div>
+        <div class="mono-row">
+          <div class="scale"><div style="width:48px;height:48px"><svg viewBox="0 0 64 64" width="48" height="48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc11" x1="32" y1="50" x2="32" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.55" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc11" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M12 13 L32 53 L52 13 L42 13 L32 38 L22 13 Z" fill="#3A4654"/><g filter="url(#glowc11)"><path d="M32 12 L32 50" fill="none" stroke="url(#seamc11)" stroke-width="4.2" stroke-linecap="round"/></g><path d="M32 12 L32 50" fill="none" stroke="#FFE0AE" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/></svg></div><span class="scale__cap">48 px</span></div>
+          <div class="scale"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc12" x1="32" y1="50" x2="32" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.55" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc12" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M12 13 L32 53 L52 13 L42 13 L32 38 L22 13 Z" fill="#3A4654"/><g filter="url(#glowc12)"><path d="M32 12 L32 50" fill="none" stroke="url(#seamc12)" stroke-width="4.2" stroke-linecap="round"/></g><path d="M32 12 L32 50" fill="none" stroke="#FFE0AE" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/></svg></div><span class="scale__cap">32 px</span></div>
+          <div class="scale"><div style="width:16px;height:16px"><svg viewBox="0 0 64 64" width="16" height="16" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc13" x1="32" y1="50" x2="32" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.55" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc13" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M12 13 L32 53 L52 13 L42 13 L32 38 L22 13 Z" fill="#3A4654"/><g filter="url(#glowc13)"><path d="M32 12 L32 50" fill="none" stroke="url(#seamc13)" stroke-width="4.2" stroke-linecap="round"/></g><path d="M32 12 L32 50" fill="none" stroke="#FFE0AE" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/></svg></div><span class="scale__cap">16 px favicon</span></div>
+        </div>
+      </div>
+      <div class="panel panel--light">
+        <span class="panel__label">On quartz</span>
+        <div class="lockup">
+          <div class="lockup__mark"><svg viewBox="0 0 64 64" width="64" height="64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc10" x1="32" y1="50" x2="32" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.55" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc10" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M12 13 L32 53 L52 13 L42 13 L32 38 L22 13 Z" fill="#CFC7B6"/><g filter="url(#glowc10)"><path d="M32 12 L32 50" fill="none" stroke="url(#seamc10)" stroke-width="4.2" stroke-linecap="round"/></g><path d="M32 12 L32 50" fill="none" stroke="#FFE0AE" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/></svg></div>
+          <span class="word">VETA</span>
+        </div>
+        <div class="mono-row">
+          <div class="scale"><div style="width:48px;height:48px"><svg viewBox="0 0 64 64" width="48" height="48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc14" x1="32" y1="50" x2="32" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.55" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc14" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M12 13 L32 53 L52 13 L42 13 L32 38 L22 13 Z" fill="#CFC7B6"/><g filter="url(#glowc14)"><path d="M32 12 L32 50" fill="none" stroke="url(#seamc14)" stroke-width="4.2" stroke-linecap="round"/></g><path d="M32 12 L32 50" fill="none" stroke="#FFE0AE" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/></svg></div><span class="scale__cap">48 px</span></div>
+          <div class="scale"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc15" x1="32" y1="50" x2="32" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B85C1E"/><stop offset="0.55" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc15" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M12 13 L32 53 L52 13 L42 13 L32 38 L22 13 Z" fill="#CFC7B6"/><g filter="url(#glowc15)"><path d="M32 12 L32 50" fill="none" stroke="url(#seamc15)" stroke-width="4.2" stroke-linecap="round"/></g><path d="M32 12 L32 50" fill="none" stroke="#FFE0AE" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/></svg></div><span class="scale__cap">32 px</span></div>
+          <div class="scale"><div style="width:16px;height:16px"><svg viewBox="0 0 64 64" width="16" height="16" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><path d="M12 13 L32 53 L52 13 L42 13 L32 38 L22 13 Z" fill="#16110B"/><path d="M32 12 L32 50" fill="none" stroke="#F4F1EC" stroke-width="3.4" stroke-linecap="round"/></svg></div><span class="scale__cap">monochrome</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       CONCEPT 3 — SIGNAL CONVERGENCE  (runner-up)
+       Fragmented signal ticks converging into one clean forecast line.
+       ================================================================= -->
+  <section class="concept">
+    <div class="concept__head">
+      <span class="concept__num">03</span>
+      <h2 class="concept__name">Signal Convergence</h2>
+      <span class="concept__tag">fragments resolving into one line</span>
+      <span class="badge badge--alt">Runner-up</span>
+    </div>
+    <p class="rationale">
+      Three short, scattered <b>teal signal ticks</b> on the left (customs, tenders, satellite — the fragmented
+      sources) converge into a single clean <b>copper forecast line</b> on the right. It tells the wedge story
+      literally: many raw signals, fused into one number. <span class="fav">Favicon viability:</span> the most
+      literal narrative but the busiest — three ticks plus a line crowd a 16&nbsp;px box, so the small read is
+      softer than 01. Best as a large/animated mark; it places third on pure favicon strength.
+    </p>
+    <div class="specimens">
+      <div class="panel panel--dark">
+        <span class="panel__label">On obsidian</span>
+        <div class="lockup">
+          <div class="lockup__mark"><svg viewBox="0 0 64 64" width="64" height="64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc17" x1="44" y1="30" x2="58" y2="14" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc17" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M20 23 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M21 32 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M20 41 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M10 20 L20 23" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M9 33 L21 32" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M11 46 L20 41" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><g filter="url(#glowc17)"><path d="M44 30 L58 14" fill="none" stroke="url(#seamc17)" stroke-width="5" stroke-linecap="round"/></g><circle cx="44" cy="30" r="4" fill="#0B0E11"/><circle cx="44" cy="30" r="2.8" fill="#FFC777"/></svg></div>
+          <span class="word">VETA</span>
+        </div>
+        <div class="mono-row">
+          <div class="scale"><div style="width:48px;height:48px"><svg viewBox="0 0 64 64" width="48" height="48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc19" x1="44" y1="30" x2="58" y2="14" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc19" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M20 23 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M21 32 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M20 41 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M10 20 L20 23" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M9 33 L21 32" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M11 46 L20 41" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><g filter="url(#glowc19)"><path d="M44 30 L58 14" fill="none" stroke="url(#seamc19)" stroke-width="5" stroke-linecap="round"/></g><circle cx="44" cy="30" r="4" fill="#0B0E11"/><circle cx="44" cy="30" r="2.8" fill="#FFC777"/></svg></div><span class="scale__cap">48 px</span></div>
+          <div class="scale"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc20" x1="44" y1="30" x2="58" y2="14" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc20" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M20 23 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M21 32 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M20 41 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M10 20 L20 23" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M9 33 L21 32" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M11 46 L20 41" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><g filter="url(#glowc20)"><path d="M44 30 L58 14" fill="none" stroke="url(#seamc20)" stroke-width="5" stroke-linecap="round"/></g><circle cx="44" cy="30" r="4" fill="#0B0E11"/><circle cx="44" cy="30" r="2.8" fill="#FFC777"/></svg></div><span class="scale__cap">32 px</span></div>
+          <div class="scale"><div style="width:16px;height:16px"><svg viewBox="0 0 64 64" width="16" height="16" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc21" x1="44" y1="30" x2="58" y2="14" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc21" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M20 23 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M21 32 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M20 41 L44 30" fill="none" stroke="#3A4654" stroke-width="1.6" stroke-linecap="round"/><path d="M10 20 L20 23" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M9 33 L21 32" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M11 46 L20 41" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><g filter="url(#glowc21)"><path d="M44 30 L58 14" fill="none" stroke="url(#seamc21)" stroke-width="5" stroke-linecap="round"/></g><circle cx="44" cy="30" r="4" fill="#0B0E11"/><circle cx="44" cy="30" r="2.8" fill="#FFC777"/></svg></div><span class="scale__cap">16 px favicon</span></div>
+        </div>
+      </div>
+      <div class="panel panel--light">
+        <span class="panel__label">On quartz</span>
+        <div class="lockup">
+          <div class="lockup__mark"><svg viewBox="0 0 64 64" width="64" height="64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc18" x1="44" y1="30" x2="58" y2="14" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc18" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M20 23 L44 30" fill="none" stroke="#CFC7B6" stroke-width="1.6" stroke-linecap="round"/><path d="M21 32 L44 30" fill="none" stroke="#CFC7B6" stroke-width="1.6" stroke-linecap="round"/><path d="M20 41 L44 30" fill="none" stroke="#CFC7B6" stroke-width="1.6" stroke-linecap="round"/><path d="M10 20 L20 23" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M9 33 L21 32" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M11 46 L20 41" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><g filter="url(#glowc18)"><path d="M44 30 L58 14" fill="none" stroke="url(#seamc18)" stroke-width="5" stroke-linecap="round"/></g><circle cx="44" cy="30" r="4" fill="#F4F1EC"/><circle cx="44" cy="30" r="2.8" fill="#FFC777"/></svg></div>
+          <span class="word">VETA</span>
+        </div>
+        <div class="mono-row">
+          <div class="scale"><div style="width:48px;height:48px"><svg viewBox="0 0 64 64" width="48" height="48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc22" x1="44" y1="30" x2="58" y2="14" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc22" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M20 23 L44 30" fill="none" stroke="#CFC7B6" stroke-width="1.6" stroke-linecap="round"/><path d="M21 32 L44 30" fill="none" stroke="#CFC7B6" stroke-width="1.6" stroke-linecap="round"/><path d="M20 41 L44 30" fill="none" stroke="#CFC7B6" stroke-width="1.6" stroke-linecap="round"/><path d="M10 20 L20 23" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M9 33 L21 32" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M11 46 L20 41" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><g filter="url(#glowc22)"><path d="M44 30 L58 14" fill="none" stroke="url(#seamc22)" stroke-width="5" stroke-linecap="round"/></g><circle cx="44" cy="30" r="4" fill="#F4F1EC"/><circle cx="44" cy="30" r="2.8" fill="#FFC777"/></svg></div><span class="scale__cap">48 px</span></div>
+          <div class="scale"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><defs><linearGradient id="seamc23" x1="44" y1="30" x2="58" y2="14" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E8923A"/><stop offset="1" stop-color="#FFC777"/></linearGradient><filter id="glowc23" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M20 23 L44 30" fill="none" stroke="#CFC7B6" stroke-width="1.6" stroke-linecap="round"/><path d="M21 32 L44 30" fill="none" stroke="#CFC7B6" stroke-width="1.6" stroke-linecap="round"/><path d="M20 41 L44 30" fill="none" stroke="#CFC7B6" stroke-width="1.6" stroke-linecap="round"/><path d="M10 20 L20 23" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M9 33 L21 32" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><path d="M11 46 L20 41" fill="none" stroke="#3DD6C4" stroke-width="3.4" stroke-linecap="round"/><g filter="url(#glowc23)"><path d="M44 30 L58 14" fill="none" stroke="url(#seamc23)" stroke-width="5" stroke-linecap="round"/></g><circle cx="44" cy="30" r="4" fill="#F4F1EC"/><circle cx="44" cy="30" r="2.8" fill="#FFC777"/></svg></div><span class="scale__cap">32 px</span></div>
+          <div class="scale"><div style="width:16px;height:16px"><svg viewBox="0 0 64 64" width="16" height="16" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Veta mark"><path d="M20 23 L44 30" fill="none" stroke="#16110B" stroke-width="1.4" stroke-linecap="round" opacity="0.4"/><path d="M21 32 L44 30" fill="none" stroke="#16110B" stroke-width="1.4" stroke-linecap="round" opacity="0.4"/><path d="M20 41 L44 30" fill="none" stroke="#16110B" stroke-width="1.4" stroke-linecap="round" opacity="0.4"/><path d="M10 20 L20 23" fill="none" stroke="#16110B" stroke-width="3.2" stroke-linecap="round" opacity="0.55"/><path d="M9 33 L21 32" fill="none" stroke="#16110B" stroke-width="3.2" stroke-linecap="round" opacity="0.55"/><path d="M11 46 L20 41" fill="none" stroke="#16110B" stroke-width="3.2" stroke-linecap="round" opacity="0.55"/><path d="M44 30 L58 14" fill="none" stroke="#16110B" stroke-width="5" stroke-linecap="round"/><circle cx="44" cy="30" r="4" fill="#F4F1EC"/><circle cx="44" cy="30" r="2.6" fill="#16110B"/></svg></div><span class="scale__cap">monochrome</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="note">
+    <b>Recommendation:</b> adopt <b>01 · Seam Forecast</b>. It is the only mark that still says “forecast” — not
+    merely “V” — at 16&nbsp;px, it carries the tagline and the name in a single stroke, and it is materially
+    simpler and sharper than the rejected seam-through-V. It works in one color, copper/amber on dark, and copper
+    on light. Strata V is held as the formal letter-mark alternative; Signal Convergence as the narrative /
+    motion variant.
+  </div>
+
+  <footer>
+    Veta — demand intelligence for Latin American construction · marks hand-authored as inline SVG · palette per <span style="font-family:var(--mono)">tokens.css</span>
+  </footer>
+</div>
+</body>
+</html>
