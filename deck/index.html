@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veta — Seed Pitch</title>
+<meta name="description" content="Veta — the demand-intelligence layer for Latin American construction. See demand before it's an order.">
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<style>
+  /* ============================================================
+     VETA DECK — self-contained 16:9 slide system on brand tokens
+     ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--veta-obsidian);
+    color: var(--veta-text);
+    font-family: var(--veta-font-sans);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ---- Stage: scales a fixed 1280x720 canvas to the viewport ---- */
+  #stage {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background:
+      radial-gradient(1200px 700px at 80% -10%, rgba(232,146,58,0.06), transparent 60%),
+      var(--veta-obsidian);
+  }
+  #canvas {
+    position: relative;
+    width: 1280px; height: 720px;
+    transform-origin: center center;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    width: 1280px; height: 720px;
+    padding: 64px 80px 72px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    background:
+      radial-gradient(900px 520px at 88% -8%, rgba(232,146,58,0.05), transparent 62%),
+      linear-gradient(160deg, #12171F 0%, #0B0E11 70%);
+  }
+  .slide.active { display: flex; }
+  .slide.cover {
+    background:
+      radial-gradient(1000px 700px at 78% 10%, rgba(232,146,58,0.10), transparent 60%),
+      radial-gradient(700px 500px at 15% 95%, rgba(61,214,196,0.06), transparent 60%),
+      linear-gradient(155deg, #161B22 0%, #0B0E11 72%);
+  }
+
+  /* The progress seam — the signature copper vein running along the base */
+  #seam-track {
+    position: absolute; left: 0; bottom: 0; height: 3px; width: 100%;
+    background: var(--veta-strata);
+    z-index: 60;
+  }
+  #seam-fill {
+    height: 100%; width: 0%;
+    background: var(--veta-seam);
+    box-shadow: 0 0 12px rgba(232,146,58,0.55);
+    transition: width var(--veta-dur-base) var(--veta-ease-out);
+  }
+
+  /* ---- Chrome: counter + nav ---- */
+  #chrome {
+    position: fixed; right: 22px; bottom: 16px;
+    display: flex; align-items: center; gap: 14px;
+    z-index: 70; font-size: 13px; color: var(--veta-text-dim);
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+  }
+  #chrome .navbtn {
+    width: 30px; height: 30px; border-radius: 999px;
+    border: 1px solid var(--veta-strata-2);
+    background: rgba(22,27,34,0.7);
+    color: var(--veta-text-muted);
+    cursor: pointer; font-size: 15px; line-height: 1;
+    display: grid; place-items: center;
+    transition: all var(--veta-dur-fast) var(--veta-ease);
+  }
+  #chrome .navbtn:hover { border-color: var(--veta-copper); color: var(--veta-amber); }
+  #counter b { color: var(--veta-text); font-weight: 700; }
+
+  /* ---- Brand atoms ---- */
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: var(--veta-track-label);
+    font-size: 12px; font-weight: 700; color: var(--veta-copper);
+    display: flex; align-items: center; gap: 10px; margin: 0 0 22px;
+  }
+  .eyebrow.teal { color: var(--veta-teal); }
+  .eyebrow::before {
+    content: ""; width: 28px; height: 2px; border-radius: 2px;
+    background: var(--veta-seam); display: inline-block;
+  }
+  .eyebrow.teal::before { background: var(--veta-signal); }
+
+  h1.title { font-size: 58px; font-weight: 800; line-height: 1.04; letter-spacing: -0.025em; margin: 0; text-wrap: balance; }
+  h2.head  { font-size: 40px; font-weight: 800; line-height: 1.08; letter-spacing: -0.022em; margin: 0 0 8px; text-wrap: balance; max-width: 18ch; }
+  h2.head.wide { max-width: 24ch; }
+  .lead { font-size: 19px; line-height: 1.55; color: var(--veta-text-muted); max-width: 60ch; margin: 14px 0 0; }
+  .copper { color: var(--veta-amber); }
+  .teal { color: var(--veta-teal); }
+  .muted { color: var(--veta-text-muted); }
+  .dim { color: var(--veta-text-dim); }
+
+  .slide-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+  /* footnote / source line */
+  .source { font-size: 12px; color: var(--veta-text-faint); margin-top: auto; padding-top: 18px; line-height: 1.5; }
+  .source b { color: var(--veta-text-dim); font-weight: 600; }
+
+  /* ---- Wordmark ---- */
+  .wordmark { display: inline-flex; align-items: center; gap: 14px; }
+  .wordmark .mk { width: 44px; height: 44px; }
+  .wordmark .wm { font-size: 30px; font-weight: 800; letter-spacing: 0.16em; }
+  .wordmark.lg .mk { width: 72px; height: 72px; }
+  .wordmark.lg .wm { font-size: 52px; letter-spacing: 0.18em; }
+
+  /* ---- Cards & grids ---- */
+  .card {
+    background: linear-gradient(165deg, var(--veta-graphite-2) 0%, var(--veta-graphite) 100%);
+    border: 1px solid var(--veta-strata);
+    border-radius: var(--veta-radius-lg);
+    padding: 22px 24px;
+  }
+  .card .k { text-transform: uppercase; letter-spacing: 0.1em; font-size: 11px; color: var(--veta-text-dim); font-weight: 700; }
+  .card h3 { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
+  .card p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--veta-text-muted); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+  .split { display: grid; grid-template-columns: 1.05fr 1fr; gap: 44px; align-items: center; flex: 1; min-height: 0; }
+  .split.wide-left { grid-template-columns: 1fr 1.25fr; }
+
+  /* big stat */
+  .stat-xl { font-size: 80px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat-lg { font-size: 52px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat-grad { background: var(--veta-seam); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* ---- Browser chrome frame for screenshots ---- */
+  .frame {
+    border-radius: 12px; overflow: hidden;
+    border: 1px solid var(--veta-strata-2);
+    box-shadow: var(--veta-shadow-lg), var(--veta-glow-seam);
+    background: var(--veta-graphite);
+  }
+  .frame .bar {
+    height: 34px; display: flex; align-items: center; gap: 7px;
+    padding: 0 14px; background: #0E1319; border-bottom: 1px solid var(--veta-strata);
+  }
+  .frame .bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .frame .bar .u {
+    margin-left: 14px; flex: 1; height: 20px; border-radius: 6px;
+    background: #161B22; border: 1px solid var(--veta-strata);
+    font-size: 11px; color: var(--veta-text-dim); display: flex; align-items: center;
+    padding: 0 10px; letter-spacing: 0.02em;
+  }
+  .frame img { display: block; width: 100%; height: auto; }
+
+  /* annotation callout pinned to a product frame */
+  .annot {
+    position: absolute; background: rgba(11,14,17,0.92);
+    border: 1px solid var(--veta-copper); border-radius: 10px;
+    padding: 10px 13px; font-size: 13px; max-width: 230px; line-height: 1.4;
+    box-shadow: var(--veta-glow-seam); z-index: 5;
+  }
+  .annot .at { color: var(--veta-amber); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 3px; }
+
+  /* ---- Tables ---- */
+  table.matrix { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.matrix th, table.matrix td { padding: 9px 12px; text-align: center; border-bottom: 1px solid var(--veta-strata); }
+  table.matrix th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--veta-text-dim); font-weight: 700; }
+  table.matrix td:first-child, table.matrix th:first-child { text-align: left; }
+  table.matrix td.name { color: var(--veta-text); font-weight: 600; }
+  table.matrix tr.veta td { background: rgba(232,146,58,0.08); }
+  table.matrix tr.veta td:first-child { color: var(--veta-amber); }
+  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; }
+  .dot.yes { background: var(--veta-teal); box-shadow: 0 0 8px rgba(61,214,196,0.5); }
+  .dot.part { background: var(--veta-warn); opacity: 0.85; }
+  .dot.no { background: transparent; border: 1px solid var(--veta-strata-2); }
+  .dot.veta { background: var(--veta-copper); box-shadow: 0 0 9px rgba(232,146,58,0.6); }
+
+  /* pills / tags */
+  .pill { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; padding: 6px 13px; border-radius: 999px; border: 1px solid var(--veta-strata-2); color: var(--veta-text-muted); background: rgba(22,27,34,0.6); }
+  .pill .d { width: 7px; height: 7px; border-radius: 50%; background: var(--veta-teal); }
+
+  /* honest-caveat band */
+  .caveat {
+    border-left: 3px solid var(--veta-warn);
+    background: var(--veta-warn-bg);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px; margin-top: 18px;
+  }
+  .caveat .kk { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--veta-warn); font-weight: 700; }
+  .caveat p { margin: 5px 0 0; font-size: 15px; color: var(--veta-text); line-height: 1.5; }
+
+  ul.clean { list-style: none; padding: 0; margin: 0; }
+  ul.clean li { position: relative; padding-left: 22px; margin-bottom: 13px; font-size: 16px; line-height: 1.5; color: var(--veta-text-muted); }
+  ul.clean li::before { content: ""; position: absolute; left: 0; top: 9px; width: 9px; height: 2px; background: var(--veta-seam); }
+  ul.clean li b { color: var(--veta-text); font-weight: 700; }
+
+  .hint { position: fixed; left: 22px; bottom: 18px; font-size: 12px; color: var(--veta-text-faint); z-index: 70; }
+  .kbd { border: 1px solid var(--veta-strata-2); border-radius: 4px; padding: 1px 6px; font-size: 11px; color: var(--veta-text-dim); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="canvas">
+
+    <!-- ===================== SLIDE 1 — COVER ===================== -->
+    <section class="slide cover active">
+      <div class="slide-body" style="justify-content:center;">
+        <!-- decorative full seam -->
+        <svg width="0" height="0" style="position:absolute"></svg>
+        <svg viewBox="0 0 1280 720" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; opacity:0.9; pointer-events:none;">
+          <defs>
+            <linearGradient id="seamCov" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#B85C1E" stop-opacity="0"/>
+              <stop offset="35%" stop-color="#E8923A"/>
+              <stop offset="70%" stop-color="#FFC777"/>
+              <stop offset="100%" stop-color="#FFC777" stop-opacity="0"/>
+            </linearGradient>
+            <filter id="glowCov"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <path d="M -40 600 L 700 300 L 1340 40" fill="none" stroke="url(#seamCov)" stroke-width="2.5" filter="url(#glowCov)"/>
+        </svg>
+
+        <div class="wordmark lg" style="margin-bottom:30px; position:relative;">
+          <span class="mk" id="cov-mark"></span>
+          <span class="wm">VETA</span>
+        </div>
+        <h1 class="title" style="font-size:64px; max-width:17ch; position:relative;">See demand <span class="copper">before</span> it's an order.</h1>
+        <p class="lead" style="font-size:21px; max-width:54ch; position:relative;">The demand-intelligence layer for Latin American construction — fusing customs, public tenders, port manifests, satellite, and a field network into one forward forecast.</p>
+        <div style="display:flex; gap:14px; margin-top:34px; align-items:center; position:relative;">
+          <span class="pill"><span class="d"></span> Veta &times; Grupo AG</span>
+          <span class="pill" style="border-color:var(--veta-strata);">Alloy &middot; InnovArise</span>
+          <span class="dim" style="margin-left:8px; font-size:13px;">Seed-stage &middot; 2026</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 2 — THE WORK ===================== -->
+    <section class="slide">
+      <div class="eyebrow">The work behind the pitch</div>
+      <div class="slide-body">
+        <h2 class="head wide">We did the desk work before we asked for a dollar</h2>
+        <p class="lead">Five data sources stress-tested for feasibility, a two-method bottom-up market model, and a verified buyer target list with warm paths in.</p>
+        <div class="grid4" style="margin-top:36px;">
+          <div class="card"><div class="stat-lg stat-grad">5</div><p style="margin-top:10px;">data sources stress-tested for machine-ingestion &amp; cost</p></div>
+          <div class="card"><div class="stat-lg stat-grad">6</div><p style="margin-top:10px;">Central American countries modeled bottom-up</p></div>
+          <div class="card"><div class="stat-lg stat-grad">2</div><p style="margin-top:10px;">independent methods cross-checking the TAM</p></div>
+          <div class="card"><div class="stat-lg" style="color:var(--veta-teal)">$0</div><p style="margin-top:10px;">licensing cost — anchor sources are free &amp; open</p></div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:30px;">
+          <span class="pill">FICEM</span><span class="pill">CACIF</span><span class="pill">ALACERO</span>
+          <span class="pill">Brazil Comex Stat</span><span class="pill">Sentinel-2 / Copernicus</span>
+          <span class="pill">GUATECOMPRAS &middot; HonduCompras (OCDS)</span>
+        </div>
+        <div class="source"><b>Sources:</b> Brazil Comex Stat free production API (data to 1997); Sentinel-2 free 10m imagery; GUATECOMPRAS/HonduCompras full OCDS feeds, daily. <span class="dim">Non-AG buyer interviews are the next thing we close in Build.</span></div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 3 — THE PROBLEM (hook) ===================== -->
+    <section class="slide">
+      <div class="eyebrow">The problem</div>
+      <div class="split">
+        <div>
+          <h2 class="head" style="font-size:44px; max-width:15ch;">There is no forward demand signal for construction anywhere in Latin America</h2>
+          <p class="lead">Everyone who sells, finances, or moves materials runs on a backward-looking, fragmented view of demand. The one product that fixes this — <b class="copper">Dodge</b> — exists only in the United States.</p>
+          <div class="source"><b>Sources:</b> Dodge is US-only (market.md). GlobalData covers only Panama in all of Central America.</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          <div class="card" style="text-align:center; padding:30px;">
+            <div class="stat-xl stat-grad">0.1<span style="font-size:34px; color:var(--veta-text-dim);">/1.0</span></div>
+            <p style="margin-top:12px; font-size:15px;">the reliability score the leading syndicated source gives <b style="color:var(--veta-text)">its own LatAm project data</b></p>
+          </div>
+          <div class="card" style="display:flex; align-items:center; gap:18px;">
+            <div class="stat-lg" style="color:var(--veta-teal)">US</div>
+            <p style="font-size:15px;">Dodge maps forward demand county-by-county — and stops at the border. South of it: the void.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 4 — HOW A FORECAST GETS BUILT TODAY ===================== -->
+    <section class="slide">
+      <div class="eyebrow">Forecasting by the rear-view mirror</div>
+      <div class="slide-body">
+        <h2 class="head wide">Today a forecast is stitched from five broken sources</h2>
+        <div style="display:flex; align-items:stretch; gap:14px; margin-top:34px; flex:1; min-height:0;">
+          <div style="display:grid; grid-template-rows:repeat(4,1fr); gap:12px; flex:1.3;">
+            <div class="card" style="padding:14px 18px;"><div class="k">Static report</div><p style="margin-top:3px;">GlobalData country PDF — <b style="color:var(--veta-text)">~$2K</b>, covers only Panama in CA</p></div>
+            <div class="card" style="padding:14px 18px;"><div class="k">Free association stats</div><p style="margin-top:3px;">FICEM / SNIC / CMIC / DANE — <b style="color:var(--veta-text)">backward-looking</b></p></div>
+            <div class="card" style="padding:14px 18px;"><div class="k">Commodity feeds</div><p style="margin-top:3px;">Argus / CRU — give <b style="color:var(--veta-text)">price, not volume</b></p></div>
+            <div class="card" style="padding:14px 18px;"><div class="k">Project database</div><p style="margin-top:3px;">so unreliable the vendor rates it <b style="color:var(--veta-text)">~0</b></p></div>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:center; flex:0 0 70px;">
+            <svg width="64" height="220" viewBox="0 0 64 220"><defs><linearGradient id="merge4" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#3A4654"/><stop offset="100%" stop-color="#5C6573"/></linearGradient></defs>
+              <path d="M2 28 C40 28 24 110 60 110" stroke="url(#merge4)" stroke-width="2" fill="none"/>
+              <path d="M2 88 C40 88 30 110 60 110" stroke="url(#merge4)" stroke-width="2" fill="none"/>
+              <path d="M2 148 C40 148 30 110 60 110" stroke="url(#merge4)" stroke-width="2" fill="none"/>
+              <path d="M2 198 C40 198 24 110 60 110" stroke="url(#merge4)" stroke-width="2" fill="none"/>
+            </svg>
+          </div>
+          <div class="card" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; border-color:var(--veta-strata-2); border-style:dashed;">
+            <div style="font-size:64px; color:var(--veta-text-faint); font-weight:800;">?</div>
+            <h3 style="font-size:20px; margin-top:10px; color:var(--veta-text);">No quantified forward demand by region</h3>
+            <p style="margin-top:8px; max-width:24ch;">Manufacturers misallocate capacity. Distributors carry the wrong stock. Lenders underwrite blind.</p>
+          </div>
+        </div>
+        <div class="source"><b>Sources:</b> GlobalData PDF ~$2K, Panama-only in CA (thesis.md/market.md); price feeds give price, not volume.</div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 5 — MEET DANIELA ===================== -->
+    <section class="slide">
+      <div class="eyebrow teal">The customer</div>
+      <div class="split">
+        <div>
+          <h2 class="head">Meet Daniela — she owns the demand forecast for a regional cement maker</h2>
+          <p class="lead">Every quarter she has to call forward demand — how much cement each region will consume — so plants run at the right rate and inventory sits in the right place.</p>
+          <ul class="clean" style="margin-top:24px;">
+            <li>Owns the <b>forecast</b> and the <b>market-intelligence budget line</b></li>
+            <li>Forecasts against incomplete, lagging signals</li>
+            <li>When she's wrong, it's idle capacity or a stockout — <b>millions either way</b></li>
+          </ul>
+        </div>
+        <div>
+          <div class="card" style="padding:0; overflow:hidden;">
+            <div style="height:140px; background:linear-gradient(135deg,#1D2530,#0B0E11); position:relative; display:flex; align-items:flex-end; padding:20px 24px;">
+              <svg viewBox="0 0 400 140" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; opacity:0.5;"><path d="M-10 120 L200 60 L420 10" stroke="url(#seamCov)" stroke-width="2" fill="none"/></svg>
+              <div style="position:relative; width:64px; height:64px; border-radius:50%; background:var(--veta-seam); display:grid; place-items:center; font-size:26px; font-weight:800; color:#20140A;">DB</div>
+            </div>
+            <div style="padding:22px 24px;">
+              <h3 style="font-size:22px; margin:0;">Daniela Barrios</h3>
+              <p style="margin:4px 0 14px; color:var(--veta-teal); font-weight:600;">Director of Demand Planning · regional CA cement manufacturer</p>
+              <p style="font-size:14px;">"I commit to a number the plant follows for the quarter — built from last year's volumes, a PDF that ignores my region, and a few sales-rep calls."</p>
+            </div>
+          </div>
+          <div class="source"><b>Persona:</b> composite, synthesized from a verified target list. Closest real match: a Dir. de Planeación Cadena de Abastecimientos at a regional cement major. <span style="color:var(--veta-warn)">Validate against a live interviewee before the room.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 6 — THE REFRAME ===================== -->
+    <section class="slide">
+      <div class="eyebrow">The reframe</div>
+      <div class="slide-body" style="justify-content:center;">
+        <h2 class="head wide" style="font-size:38px; margin-bottom:30px;">The intelligence that exists answers the wrong question</h2>
+        <div class="grid2" style="gap:28px;">
+          <div class="card" style="padding:34px; border-color:var(--veta-strata);">
+            <div class="k" style="color:var(--veta-text-dim);">What you can buy today</div>
+            <h3 style="font-size:26px; margin:10px 0;">Project <span class="dim">leads</span></h3>
+            <p style="font-size:16px;">"Who's building what — go win the spec."</p>
+            <p style="margin-top:16px; font-size:14px; color:var(--veta-text-dim);">Tells you <b style="color:var(--veta-text)">who</b>.</p>
+          </div>
+          <div class="card" style="padding:34px; border-color:var(--veta-copper); box-shadow:var(--veta-glow-seam);">
+            <div class="k" style="color:var(--veta-copper);">What nobody sells for LatAm</div>
+            <h3 style="font-size:26px; margin:10px 0;" class="copper">Demand forecast</h3>
+            <p style="font-size:16px;">"How much a region will consume — so I can pre-position capacity and inventory."</p>
+            <p style="margin-top:16px; font-size:14px; color:var(--veta-amber);">Tells you <b>how much</b>.</p>
+          </div>
+        </div>
+        <p class="lead" style="text-align:center; max-width:64ch; margin:30px auto 0; font-size:21px;">Leads tell you <b class="dim">who</b>. Veta tells you <b class="copper">how much</b>. Different product, different decision, different budget.</p>
+        <div class="source"><b>Source:</b> proven WTP today is for project-lead intel (Building Radar → Holcim/Heidelberg; BNC). The forecast layer is the white space.</div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 7 — WHY NO ONE BUILT IT (landscape) ===================== -->
+    <section class="slide">
+      <div class="eyebrow">Why no one has built it</div>
+      <div class="slide-body">
+        <h2 class="head wide">Everyone covers a slice — no one fuses the forecast</h2>
+        <table class="matrix" style="margin-top:22px;">
+          <thead><tr><th>Player</th><th>Forward?</th><th>Sub-country?</th><th>LatAm?</th><th>Demand volume<br>(not price/leads)</th></tr></thead>
+          <tbody>
+            <tr><td class="name">CemWeek — cement forecasts</td><td><span class="dot yes"></span></td><td><span class="dot no"></span></td><td><span class="dot part"></span></td><td><span class="dot yes"></span></td></tr>
+            <tr><td class="name">Argus / CRU — commodity prices</td><td><span class="dot yes"></span></td><td><span class="dot no"></span></td><td><span class="dot part"></span></td><td><span class="dot no"></span></td></tr>
+            <tr><td class="name">GlobalData / Mordor — reports</td><td><span class="dot part"></span></td><td><span class="dot no"></span></td><td><span class="dot part"></span></td><td><span class="dot no"></span></td></tr>
+            <tr><td class="name">FICEM / SNIC — free stats</td><td><span class="dot no"></span></td><td><span class="dot no"></span></td><td><span class="dot yes"></span></td><td><span class="dot yes"></span></td></tr>
+            <tr><td class="name">LogComex — customs aggregator</td><td><span class="dot no"></span></td><td><span class="dot part"></span></td><td><span class="dot yes"></span></td><td><span class="dot part"></span></td></tr>
+            <tr><td class="name">Building Radar / BNC — leads</td><td><span class="dot yes"></span></td><td><span class="dot yes"></span></td><td><span class="dot part"></span></td><td><span class="dot no"></span></td></tr>
+            <tr><td class="name">Dodge — the gold standard</td><td><span class="dot yes"></span></td><td><span class="dot yes"></span></td><td><span class="dot no"></span></td><td><span class="dot yes"></span></td></tr>
+            <tr class="veta"><td class="name">Veta</td><td><span class="dot veta"></span></td><td><span class="dot veta"></span></td><td><span class="dot veta"></span></td><td><span class="dot veta"></span></td></tr>
+          </tbody>
+        </table>
+        <div style="display:flex; gap:22px; margin-top:14px; font-size:12px; color:var(--veta-text-dim);">
+          <span><span class="dot yes" style="vertical-align:middle"></span> covered</span>
+          <span><span class="dot part" style="vertical-align:middle"></span> partial</span>
+          <span><span class="dot no" style="vertical-align:middle"></span> none</span>
+          <span style="margin-left:auto; color:var(--veta-amber); font-weight:600;">The empty row — forward LatAm demand volume — is Veta.</span>
+        </div>
+        <div class="source"><b>Sources (market.md):</b> Dodge US-only county-level; CemWeek country-level only; LogComex $43.4M raised, reads customs backward; Building Radar/BNC = leads.</div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 8 — INTRODUCING VETA + PRODUCT ===================== -->
+    <section class="slide">
+      <div class="split wide-left">
+        <div>
+          <div class="wordmark" style="margin-bottom:24px;"><span class="mk" id="rev-mark"></span><span class="wm">VETA</span></div>
+          <h2 class="head" style="font-size:40px;">The demand-intelligence layer for Latin American construction</h2>
+          <p class="lead">We don't sell you a list of projects. We tell you <b class="copper">how much the market will buy</b>, by material and by region — before the order is placed.</p>
+          <p style="margin-top:22px; font-size:22px; font-weight:700;" class="copper">See demand before it's an order.</p>
+        </div>
+        <div style="position:relative;">
+          <div class="frame">
+            <div class="bar"><i style="background:#F26D6D"></i><i style="background:#F5B544"></i><i style="background:#4ADE80"></i><span class="u">veta.app / console — live · Supabase</span></div>
+            <img src="img/app-dashboard.png" alt="Veta forward demand console">
+          </div>
+          <div class="annot" style="top:-14px; right:-18px;"><span class="at">Live product</span>Real data, live Supabase backend — not a mockup.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 9 — THE FUSION ENGINE ===================== -->
+    <section class="slide">
+      <div class="eyebrow">How it works</div>
+      <div class="slide-body">
+        <h2 class="head" style="margin-bottom:6px;">Five signals in. One forecast out.</h2>
+        <div style="display:flex; align-items:center; gap:0; margin-top:30px; flex:1; min-height:0;">
+          <!-- sources -->
+          <div style="display:flex; flex-direction:column; gap:13px; flex:0 0 290px;">
+            <div class="pill" style="justify-content:flex-start;"><span class="d"></span> Customs &amp; SIECA trade records</div>
+            <div class="pill" style="justify-content:flex-start;"><span class="d"></span> Public tenders — OCDS feeds</div>
+            <div class="pill" style="justify-content:flex-start;"><span class="d"></span> Port manifests</div>
+            <div class="pill" style="justify-content:flex-start;"><span class="d"></span> Sentinel-2 satellite imagery</div>
+            <div class="pill" style="justify-content:flex-start; border-color:var(--veta-copper); color:var(--veta-amber);"><span class="d" style="background:var(--veta-copper)"></span> WhatsApp field network <span style="font-size:10px; opacity:0.8;">— the un-copyable one</span></div>
+          </div>
+          <!-- converging veins -->
+          <div style="flex:1; align-self:stretch; position:relative;">
+            <svg viewBox="0 0 360 320" preserveAspectRatio="none" style="width:100%; height:100%;">
+              <defs>
+                <linearGradient id="vein9" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#3DD6C4" stop-opacity="0.7"/><stop offset="100%" stop-color="#E8923A"/></linearGradient>
+                <filter id="g9"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <path d="M0 30  C160 30 200 160 350 160" stroke="url(#vein9)" stroke-width="2.4" fill="none" filter="url(#g9)"/>
+              <path d="M0 95  C160 95 200 160 350 160" stroke="url(#vein9)" stroke-width="2.4" fill="none" filter="url(#g9)"/>
+              <path d="M0 160 C160 160 220 160 350 160" stroke="url(#vein9)" stroke-width="2.4" fill="none" filter="url(#g9)"/>
+              <path d="M0 225 C160 225 200 160 350 160" stroke="url(#vein9)" stroke-width="2.4" fill="none" filter="url(#g9)"/>
+              <path d="M0 290 C160 290 200 160 350 160" stroke="url(#vein9)" stroke-width="2.4" fill="none" filter="url(#g9)"/>
+            </svg>
+          </div>
+          <!-- core -->
+          <div style="flex:0 0 130px; display:grid; place-items:center;">
+            <div style="width:120px; height:120px; border-radius:50%; background:radial-gradient(circle,#1D2530,#0B0E11); border:1px solid var(--veta-copper); box-shadow:var(--veta-glow-seam); display:grid; place-items:center; text-align:center;">
+              <span style="font-size:13px; font-weight:700; line-height:1.2; color:var(--veta-amber);">FUSION<br>ENGINE</span>
+            </div>
+          </div>
+          <!-- output -->
+          <div style="flex:0 0 230px;">
+            <div class="card" style="border-color:var(--veta-copper); padding:20px;">
+              <div class="k" style="color:var(--veta-copper);">Output</div>
+              <h3 style="font-size:18px; margin:6px 0;">Forward demand forecast</h3>
+              <p style="font-size:14px;">Material × region × quarter — how much each market will consume next.</p>
+            </div>
+          </div>
+        </div>
+        <div class="source"><b>Sources (market.md):</b> Brazil Comex Stat free API; Sentinel-2 free 10m, ~5-day revisit, ML masks ~79% mIoU; GUATECOMPRAS/HonduCompras full OCDS daily. <b>Cost is data engineering, not licensing.</b></div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 10 — DANIELA'S FORECAST (product in action) ===================== -->
+    <section class="slide">
+      <div class="eyebrow teal">The product in action</div>
+      <div class="split wide-left" style="gap:38px;">
+        <div style="position:relative;">
+          <div class="frame">
+            <div class="bar"><i style="background:#F26D6D"></i><i style="background:#F5B544"></i><i style="background:#4ADE80"></i><span class="u">veta.app / console — Bogotá · Cement</span></div>
+            <img src="img/app-dashboard.png" alt="Veta forecast view with signal drill-down">
+          </div>
+          <div class="annot" style="top:64px; left:-22px;"><span class="at">The call</span>+18% cement demand, 6–8 weeks before order books.</div>
+          <div class="annot" style="bottom:18px; right:-26px;"><span class="at">The "why"</span>Tenders + customs + satellite + field signals — explainable, not black-box.</div>
+        </div>
+        <div>
+          <h2 class="head" style="font-size:34px;">"Western region cement demand: +8% next quarter. Pre-position now."</h2>
+          <ul class="clean" style="margin-top:22px;">
+            <li>Her whole territory as a <b>demand surface</b>, not a guess</li>
+            <li>She sees <b>why</b> the number moved — the contributing signals</li>
+            <li>A number she can finally <b>defend in the S&amp;OP room</b></li>
+          </ul>
+          <div class="caveat" style="border-left-color:var(--veta-teal); background:var(--veta-info-bg);">
+            <div class="kk" style="color:var(--veta-teal);">Open test</div>
+            <p>The accuracy / error band comes from the Guatemala one-country backtest (Build Test #2). We present the methodology — and prove the number — not slideware.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 11 — WHAT BUYERS GET ===================== -->
+    <section class="slide">
+      <div class="eyebrow">Who benefits</div>
+      <div class="slide-body">
+        <h2 class="head wide">Plan with a number you can defend</h2>
+        <div class="grid3" style="margin-top:32px;">
+          <div class="card"><div class="k copper">Manufacturer</div><h3 style="margin-top:8px;">Right-size capacity &amp; inventory</h3><p>Win share by pre-positioning ahead of competitors. Carry a defensible S&amp;OP number.</p></div>
+          <div class="card"><div class="k copper">Distributor / network</div><h3 style="margin-top:8px;">Stock the right SKUs</h3><p>Region by region. One contract behind a network covers thousands of stores.</p></div>
+          <div class="card"><div class="k copper">FI / logistics</div><h3 style="margin-top:8px;">Underwrite forward demand</h3><p>Pre-position and lend against signal instead of lagging stats.</p></div>
+        </div>
+        <div class="card" style="margin-top:22px; border-style:dashed; border-color:var(--veta-strata-2); display:flex; align-items:center; gap:18px; background:transparent;">
+          <span class="pill" style="border-color:var(--veta-teal); color:var(--veta-teal); flex:0 0 auto;"><span class="d"></span> Grupo AG, indirectly</span>
+          <p style="margin:0; font-size:14.5px; color:var(--veta-text-muted);">Sharper channel intelligence and a stronger ecosystem position — out of the same data, <b style="color:var(--veta-text)">without being the customer the venture depends on</b>.</p>
+        </div>
+        <div class="source"><b>Source:</b> distributor networks (Construrama / Disensa / Comprando en Grupo) each carry thousands of stores behind one contract (thesis.md). It's an ecosystem signal — multiple players pay for the slice they need.</div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 12 — WHY NOW ===================== -->
+    <section class="slide">
+      <div class="eyebrow">Why now</div>
+      <div class="slide-body">
+        <h2 class="head wide">Three forces just converged</h2>
+        <div class="grid3" style="margin-top:34px; flex:1; align-items:stretch;">
+          <div class="card" style="display:flex; flex-direction:column;">
+            <div class="stat-lg stat-grad">01</div>
+            <h3 style="margin-top:14px;">Open data matured</h3>
+            <p style="margin-top:6px;">Brazil's customs API, CA tender OCDS portals, and free Sentinel-2 became machine-ingestible at scale only in the last few years. This didn't exist in usable form five years ago.</p>
+          </div>
+          <div class="card" style="display:flex; flex-direction:column;">
+            <div class="stat-lg stat-grad">02</div>
+            <h3 style="margin-top:14px;">AI-native synthesis got cheap</h3>
+            <p style="margin-top:6px;">Fusing messy sources into a forecast is now low-cost — satellite change-detection runs ~79% mIoU off open models.</p>
+          </div>
+          <div class="card" style="display:flex; flex-direction:column; border-color:var(--veta-copper); box-shadow:var(--veta-glow-seam);">
+            <div class="stat-lg" style="color:var(--veta-amber);">03</div>
+            <h3 style="margin-top:14px;" class="copper">Category proof landed</h3>
+            <p style="margin-top:6px;">Building Radar closing <b style="color:var(--veta-text)">Holcim</b> and <b style="color:var(--veta-text)">Heidelberg</b> in 2024–25 proves the world's biggest makers now buy construction intelligence. LatAm is the white space.</p>
+          </div>
+        </div>
+        <div class="source"><b>Sources (market.md/thesis.md):</b> Brazil Comex Stat / OCDS portals / Sentinel-2 recently machine-ingestible; ~79% mIoU off open models; Building Radar–Holcim/Heidelberg 2024–25. LogComex's roadmap is Mexico/Colombia, not CA — a timing window.</div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 13 — MARKET TAM/SAM/SOM ===================== -->
+    <section class="slide">
+      <div class="eyebrow">The market</div>
+      <div class="split wide-left">
+        <div>
+          <h2 class="head" style="font-size:34px;">A focused, partner-anchored market — with a stretch case that makes it a venture</h2>
+          <p class="lead">This is a consolidated market: cement, steel, and pipe collapse into ~35–45 buying parents LatAm-wide, plus the distribution networks. We're honest about the base and explicit about the upside.</p>
+          <div class="caveat" style="margin-top:20px;">
+            <div class="kk">The stretch case</div>
+            <p>Land 2–3 multi-country anchors (a Cemex / Holcim / Gerdau), monetize the franchise networks, push blended ACV up → <b>~$3–4M ARR · ~$25M+ EV</b> at a data-SaaS multiple, exit via strategic M&amp;A.</p>
+          </div>
+        </div>
+        <div>
+          <svg viewBox="0 0 460 360" style="width:100%; height:auto;">
+            <defs>
+              <linearGradient id="barTam" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2A323D"/><stop offset="100%" stop-color="#3A4654"/></linearGradient>
+              <linearGradient id="barSam" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#18928A"/><stop offset="100%" stop-color="#3DD6C4"/></linearGradient>
+              <linearGradient id="barSom" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#B85C1E"/><stop offset="100%" stop-color="#E8923A"/></linearGradient>
+            </defs>
+            <!-- scale: $1M ≈ 78px, max ~4.9 -->
+            <g font-family="system-ui" font-size="14">
+              <!-- TAM -->
+              <text x="0" y="40" fill="#B6BCC5" font-size="13">TAM · reachable LatAm buyers</text>
+              <rect x="0" y="50" width="289" height="40" rx="6" fill="url(#barTam)"/>
+              <text x="299" y="76" fill="#F4F1EC" font-weight="700" font-size="18">$3.7M</text>
+              <!-- SAM -->
+              <text x="0" y="135" fill="#B6BCC5" font-size="13">SAM · CA→LatAm reachable, 3–5 yr</text>
+              <rect x="0" y="145" width="382" height="40" rx="6" fill="url(#barSam)"/>
+              <text x="392" y="171" fill="#F4F1EC" font-weight="700" font-size="18">$4.9M</text>
+              <!-- SOM -->
+              <text x="0" y="230" fill="#B6BCC5" font-size="13">SOM · winnable 3–5 yr (base)</text>
+              <rect x="0" y="240" width="125" height="40" rx="6" fill="url(#barSom)"/>
+              <text x="135" y="266" fill="#F4F1EC" font-weight="700" font-size="18">$1.6M</text>
+              <!-- SOM stretch overlay -->
+              <text x="0" y="325" fill="#FFC777" font-size="13">SOM · stretch</text>
+              <rect x="0" y="335" width="273" height="22" rx="5" fill="none" stroke="#FFC777" stroke-width="1.5" stroke-dasharray="5 4"/>
+              <text x="283" y="352" fill="#FFC777" font-weight="700" font-size="15">$3.5M</text>
+            </g>
+          </svg>
+          <p class="dim" style="font-size:11.5px; margin-top:6px;">Parent buying-decision view. SAM folds in multi-entity selling over the rollout; SOM/SAM shown as reach over time, not nested subsets.</p>
+        </div>
+      </div>
+      <div class="source"><b>Source (market.md, two methods cross-checked):</b> TAM $3.7M · SAM $4.9M · SOM $1.6M ARR; ~35–45 manufacturer parents LatAm-wide; stretch $3–4M ARR → ~$25M+ EV at ~6x. Most probable exit = strategic M&amp;A (LogComex / Dodge / cement major).</div>
+    </section>
+
+    <!-- ===================== SLIDE 14 — BUSINESS MODEL & PRICING ===================== -->
+    <section class="slide">
+      <div class="eyebrow">Business model &amp; pricing</div>
+      <div class="slide-body">
+        <h2 class="head wide">A high-margin data business — anchor sources are free</h2>
+        <div class="split" style="margin-top:18px; gap:40px;">
+          <div>
+            <svg viewBox="0 0 440 300" style="width:100%; height:auto;">
+              <defs><linearGradient id="col" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#B85C1E"/><stop offset="100%" stop-color="#FFC777"/></linearGradient>
+                <linearGradient id="colT" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#18928A"/><stop offset="100%" stop-color="#3DD6C4"/></linearGradient></defs>
+              <g font-family="system-ui" font-size="13" fill="#B6BCC5" text-anchor="middle">
+                <!-- baseline -->
+                <line x1="20" y1="250" x2="430" y2="250" stroke="#2A323D"/>
+                <!-- Starter 25k -> 69px -->
+                <rect x="40" y="181" width="70" height="69" rx="4" fill="url(#colT)"/>
+                <text x="75" y="172" fill="#F4F1EC" font-weight="700">$25K</text>
+                <text x="75" y="270">Starter</text>
+                <!-- Professional 55k -> 151px (anchor) -->
+                <rect x="145" y="99" width="70" height="151" rx="4" fill="url(#col)"/>
+                <text x="180" y="90" fill="#FFC777" font-weight="700">$55K</text>
+                <text x="180" y="270" fill="#FFC777">Professional</text>
+                <text x="180" y="286" font-size="11">(anchor)</text>
+                <!-- Enterprise+ 90k -> 247 -> cap at 220 -->
+                <rect x="250" y="35" width="70" height="215" rx="4" fill="url(#col)" opacity="0.85"/>
+                <text x="285" y="26" fill="#F4F1EC" font-weight="700">$90K</text>
+                <text x="285" y="270">Enterprise+</text>
+                <!-- Network 9-30k -> ~55px -->
+                <rect x="355" y="195" width="70" height="55" rx="4" fill="url(#colT)" opacity="0.8"/>
+                <text x="390" y="186" fill="#F4F1EC" font-weight="700" font-size="12">$9–30K</text>
+                <text x="390" y="270">Network</text>
+              </g>
+            </svg>
+            <p class="dim" style="font-size:11.5px;">Annual subscription tiers. Crowdsource layer: pay contributors $0.05–0.10 / data point against subscriptions in the low thousands/mo (Premise model).</p>
+          </div>
+          <div>
+            <ul class="clean">
+              <li><b>Cost is engineering, not licensing</b> — Brazil customs + Sentinel-2 are free → high gross margin once built</li>
+              <li><b>$55K anchor ACV</b> triangulated from GlobalData median $68.5K, Dodge $8–15K, BNC $360–720/user, less a 25–40% LatAm haircut</li>
+              <li><b>Attractive crowdsource spread</b> — pennies in, thousands/mo out (proven by Premise)</li>
+            </ul>
+            <div class="caveat">
+              <div class="kk">Flagged for the finance model</div>
+              <p>Gross-margin %, CAC, and payback are not yet modeled — the shape is right, the numbers come next.</p>
+            </div>
+          </div>
+        </div>
+        <div class="source"><b>Sources (pricing-roi.md / market.md):</b> tiers $25K / $55K / $90K / $9–30K; crowdsource $0.05–0.10 in vs. $1.5–15K/mo out.</div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 15 — CUSTOMER ROI ===================== -->
+    <section class="slide">
+      <div class="eyebrow teal">Customer ROI</div>
+      <div class="split wide-left">
+        <div>
+          <h2 class="head" style="font-size:36px;">~$2.1M of value per cement manufacturer, per year</h2>
+          <p class="lead">A defensible forecast moves three line items at once — and Veta captures a small fraction of the value it creates.</p>
+          <div style="display:flex; gap:16px; margin-top:24px;">
+            <div class="card" style="text-align:center; flex:1;"><div class="stat-lg stat-grad">~40x</div><p style="margin-top:6px;">return on a full deployment</p></div>
+            <div class="card" style="text-align:center; flex:1;"><div class="stat-lg" style="color:var(--veta-teal)">2.5–5%</div><p style="margin-top:6px;">value captured (well under 30%)</p></div>
+          </div>
+        </div>
+        <div>
+          <svg viewBox="0 0 440 330" style="width:100%; height:auto;">
+            <g font-family="system-ui" font-size="13">
+              <!-- value drivers stacking up; scale $100K ≈ 11.5px -->
+              <text x="0" y="20" fill="#B6BCC5">Working capital freed</text>
+              <rect x="240" y="6" width="55" height="22" rx="4" fill="#18928A"/>
+              <text x="305" y="22" fill="#F4F1EC" font-weight="700">$480K</text>
+
+              <text x="0" y="60" fill="#B6BCC5">Avoided overproduction</text>
+              <rect x="240" y="46" width="127" height="22" rx="4" fill="#3DD6C4"/>
+              <text x="377" y="62" fill="#F4F1EC" font-weight="700">$1.1M</text>
+
+              <text x="0" y="100" fill="#B6BCC5">Avoided stockouts</text>
+              <rect x="240" y="86" width="69" height="22" rx="4" fill="#18928A"/>
+              <text x="319" y="102" fill="#F4F1EC" font-weight="700">$600K</text>
+
+              <line x1="0" y1="128" x2="440" y2="128" stroke="#2A323D"/>
+              <text x="0" y="155" fill="#F4F1EC" font-weight="700" font-size="15">Total annual value</text>
+              <rect x="0" y="170" width="251" height="34" rx="5" fill="url(#barSam)"/>
+              <text x="261" y="193" fill="#F4F1EC" font-weight="800" font-size="20">~$2.18M</text>
+
+              <text x="0" y="245" fill="#B6BCC5">Veta cost (full price)</text>
+              <rect x="0" y="258" width="14" height="20" rx="3" fill="#E8923A"/>
+              <text x="24" y="273" fill="#FFC777" font-weight="700">−$55K</text>
+
+              <text x="0" y="312" fill="#F4F1EC" font-weight="800" font-size="17">Net benefit</text>
+              <text x="180" y="312" fill="#FFC777" font-weight="800" font-size="22">~$2.13M</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="source"><b>Source (pricing-roi.md):</b> value to one cement manufacturer — working capital freed $480K (−10% inventory × 12% carry) + avoided overproduction $1.1M + avoided stockouts $600K = ~$2.18M; less $55K cost = ~$2.13M net.</div>
+    </section>
+
+    <!-- ===================== SLIDE 16 — TRACTION & THE HONEST GAP ===================== -->
+    <section class="slide">
+      <div class="eyebrow">Demonstrated demand &amp; the one honest gap</div>
+      <div class="slide-body">
+        <h2 class="head wide">The world's largest materials makers already buy construction intelligence</h2>
+        <div class="grid2" style="margin-top:26px;">
+          <div class="card">
+            <div class="k teal">Proven behavior</div>
+            <p style="margin-top:10px; font-size:16px; color:var(--veta-text);"><b>Holcim</b> and <b>Heidelberg Materials</b> — the two largest building-materials makers in the world — pay <b>Building Radar</b> for construction intelligence.</p>
+            <p style="margin-top:10px;">Verifiable from Holcim's own LinkedIn, tied to its NextGen Growth 2030 strategy (~Aug 2025). BNC sells the same category at $360 / $480 / $720 per user/yr + $2,499/yr analytics.</p>
+          </div>
+          <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
+            <div style="display:flex; gap:14px; flex-wrap:wrap;">
+              <span class="pill" style="font-size:14px;">Holcim</span>
+              <span class="pill" style="font-size:14px;">Heidelberg</span>
+              <span class="pill" style="font-size:14px;">Building Radar</span>
+              <span class="pill" style="font-size:14px;">BNC</span>
+            </div>
+            <p class="dim" style="margin-top:18px; font-size:14px;">The behavior — manufacturers paying for construction intelligence — is established everywhere except the region with the biggest white space.</p>
+          </div>
+        </div>
+        <div class="caveat" style="margin-top:22px;">
+          <div class="kk">The one honest gap — our #1 risk, on the slide on purpose</div>
+          <p>That proven willingness-to-pay is for project <b>leads</b>. We sell the <b>forecast</b>. Same buyers, adjacent product — and our specific layer is <b>untested</b>. It's the first thing we prove: a paid LOI from a non-AG manufacturer for the forecast. <span class="dim">The pivot is pre-baked — if they'll only pay for leads, Veta pivots to lead-intel (already validated) or index-licensing to FIs.</span></p>
+        </div>
+        <div class="source"><b>Sources (market.md):</b> Holcim + Heidelberg pay Building Radar (Holcim LinkedIn, NextGen Growth 2030, ~Aug 2025); BNC published pricing. Forecast-layer WTP is signal, not evidence — assumption #1, currently untested.</div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 17 — ADVANTAGE / WHY GRUPO AG ===================== -->
+    <section class="slide">
+      <div class="eyebrow">The advantage</div>
+      <div class="slide-body">
+        <h2 class="head wide">Why Grupo AG — the one partner who turns a dataset into a moat</h2>
+        <div class="grid3" style="margin-top:30px; flex:1; align-items:stretch;">
+          <div class="card" style="border-color:var(--veta-copper); box-shadow:var(--veta-glow-seam); display:flex; flex-direction:column;">
+            <div class="k copper">The moat — Technology / Data</div>
+            <h3 style="margin-top:8px;">The two-levels-down signal</h3>
+            <p style="margin-top:6px;">An arms-length, contractable feed of AG's distribution / ferretería order data — what LogComex, Building Radar, and Dodge structurally cannot get.</p>
+          </div>
+          <div class="card" style="display:flex; flex-direction:column;">
+            <div class="k">Corporate infrastructure</div>
+            <h3 style="margin-top:8px;">The first 10 sales cycles</h3>
+            <p style="margin-top:6px;">CACIF + FICEM / cement-association access opens Central American doors a cold startup can't reach.</p>
+          </div>
+          <div class="card" style="display:flex; flex-direction:column;">
+            <div class="k">Brand</div>
+            <h3 style="margin-top:8px;">A beachhead reference</h3>
+            <p style="margin-top:6px;">A named CA reference — a head-start only. We don't lean the moat on it.</p>
+          </div>
+        </div>
+        <div class="caveat" style="margin-top:20px;">
+          <div class="kk">Independent company, not an AG unit — and the load-bearing condition</div>
+          <p>External manufacturers are the customers; AG benefits indirectly. The moat holds <b>only if AG grants that arms-length feed to an independent company</b> — that's part of the ask, and we test it this sprint (~$0). Fallback moat if AG balks: the WhatsApp field network + the fusion/accuracy edge.</p>
+        </div>
+        <div class="source"><b>Source (advantage-map.md):</b> AG channel/ferretería data = proprietary moat-intake; CACIF + FICEM access. Transferability is conditional — named as assumption #3 and built into the ask.</div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 18 — FINANCIALS: ARR RAMP ===================== -->
+    <section class="slide">
+      <div class="eyebrow">Financials</div>
+      <div class="split wide-left">
+        <div>
+          <h2 class="head" style="font-size:34px;">A staged ramp to the Seed gate</h2>
+          <ul class="clean" style="margin-top:22px;">
+            <li><b>M9</b> — one-country forecast-accuracy backtest</li>
+            <li><b>M12</b> — ≥1 full-price anchor conversion · ~$176K ARR</li>
+            <li><b>M15 (Seed gate)</b> — 5–6 logos · <b class="copper">~$300K ARR</b></li>
+            <li><b>M24</b> — ~10 customers · ~$520K ARR</li>
+          </ul>
+          <p class="dim" style="margin-top:18px; font-size:13px;">Seed ARR band: floor $250K · midpoint $320K · stretch $500K+.</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 460 320" style="width:100%; height:auto;">
+            <defs><linearGradient id="ramp" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#18928A"/><stop offset="55%" stop-color="#E8923A"/><stop offset="100%" stop-color="#FFC777"/></linearGradient>
+              <filter id="gr"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <g font-family="system-ui" font-size="12" fill="#5C6573">
+              <!-- axes -->
+              <line x1="48" y1="20" x2="48" y2="262" stroke="#2A323D"/>
+              <line x1="48" y1="262" x2="440" y2="262" stroke="#2A323D"/>
+              <!-- y labels (ARR $K): 0,150,300,450,520 cap -->
+              <text x="40" y="266" text-anchor="end">0</text>
+              <text x="40" y="200" text-anchor="end">150</text>
+              <text x="40" y="135" text-anchor="end">300</text>
+              <text x="40" y="70" text-anchor="end">450</text>
+              <!-- x labels -->
+              <text x="80" y="280">M4</text><text x="170" y="280">M10</text><text x="230" y="280">M12</text><text x="300" y="280">M15</text><text x="420" y="280">M24</text>
+              <!-- mapping: ARR$K to y: y=262 - (val/520*222) ; x by month -->
+              <!-- M4=33->248, M10=99->220, M12=176->187, M15=300->134, M24=520->40 -->
+              <path d="M80 248 L170 220 L230 187 L300 134 L420 40" fill="none" stroke="url(#ramp)" stroke-width="3" filter="url(#gr)"/>
+              <!-- area -->
+              <path d="M80 248 L170 220 L230 187 L300 134 L420 40 L420 262 L80 262 Z" fill="url(#ramp)" opacity="0.10"/>
+              <!-- points -->
+              <circle cx="80" cy="248" r="4" fill="#3DD6C4"/>
+              <circle cx="170" cy="220" r="4" fill="#3DD6C4"/>
+              <circle cx="230" cy="187" r="4" fill="#E8923A"/>
+              <circle cx="300" cy="134" r="6" fill="#FFC777"/>
+              <circle cx="420" cy="40" r="5" fill="#FFC777"/>
+              <!-- seed gate marker -->
+              <line x1="300" y1="30" x2="300" y2="262" stroke="#FFC777" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+              <text x="300" y="24" fill="#FFC777" text-anchor="middle" font-weight="700" font-size="12">Seed gate · ~$300K</text>
+            </g>
+          </svg>
+          <p class="dim" style="font-size:11.5px; margin-top:4px;">Effective ARR, base scenario — path-to-seed.md.</p>
+        </div>
+      </div>
+      <div class="source"><b>Source (path-to-seed.md):</b> M4 $33K · M10 $99K · M12 $176K · M15 ~$300K (5–6 logos, Seed gate) · M24 ~$520K. Base case clears ~2–2.5x; 5x is stretch-and-strategic-exit dependent (Series A on ~$5M ARR).</div>
+    </section>
+
+    <!-- ===================== SLIDE 19 — THE ASK + USE OF FUNDS ===================== -->
+    <section class="slide">
+      <div class="eyebrow">The ask</div>
+      <div class="split wide-left">
+        <div>
+          <h2 class="head" style="font-size:32px;">Raising <span class="copper">$2.5M</span> Seed at <span class="copper">$10M</span> post-money</h2>
+          <p class="lead">Studio (1842 / Alloy × Grupo AG) anchors. Founders retain ~52%.</p>
+          <p style="font-size:14px; color:var(--veta-text-muted); margin-top:18px; line-height:1.6;"><b style="color:var(--veta-text)">Milestones funded:</b> one-country accuracy backtest (M9) · ≥1 full-price anchor (M12) · ~$300K ARR &amp; 5–6 logos (M15) · Series A readiness on the stretch levers.</p>
+          <div class="caveat" style="margin-top:18px;">
+            <div class="kk">What this sprint actually decides</div>
+            <p>(1) Put a priced forecast offer in front of non-AG manufacturers. (2) Confirm AG grants the arms-length data feed. If both clear, we launch.</p>
+          </div>
+        </div>
+        <div>
+          <!-- Use of funds horizontal stacked bars -->
+          <svg viewBox="0 0 460 300" style="width:100%; height:auto;">
+            <g font-family="system-ui" font-size="13">
+              <!-- scale: 45% -> 360px max width; 1% = 8px -->
+              <text x="0" y="20" fill="#B6BCC5">Engineering / data pipeline</text>
+              <rect x="0" y="28" width="360" height="26" rx="5" fill="url(#barSom)"/>
+              <text x="370" y="46" fill="#FFC777" font-weight="700">45%</text>
+
+              <text x="0" y="80" fill="#B6BCC5">GTM / sales — anchor logos</text>
+              <rect x="0" y="88" width="200" height="26" rx="5" fill="url(#barSam)"/>
+              <text x="210" y="106" fill="#3DD6C4" font-weight="700">25%</text>
+
+              <text x="0" y="140" fill="#B6BCC5">Data acquisition</text>
+              <rect x="0" y="148" width="96" height="26" rx="5" fill="#18928A"/>
+              <text x="106" y="166" fill="#F4F1EC" font-weight="700">12%</text>
+
+              <text x="0" y="200" fill="#B6BCC5">G&amp;A / legal / multi-country</text>
+              <rect x="0" y="208" width="80" height="26" rx="5" fill="#2A323D"/>
+              <text x="90" y="226" fill="#F4F1EC" font-weight="700">10%</text>
+
+              <text x="0" y="260" fill="#B6BCC5">Buffer / contingency</text>
+              <rect x="0" y="268" width="64" height="26" rx="5" fill="#2A323D"/>
+              <text x="74" y="286" fill="#F4F1EC" font-weight="700">8%</text>
+            </g>
+          </svg>
+          <p class="dim" style="font-size:11.5px; margin-top:4px;">Engineering-weighted — the moat is the data pipeline. Allocation per path-to-seed.md; confirm with team.</p>
+        </div>
+      </div>
+      <div class="source"><b>Source (path-to-seed.md / cap-table.md):</b> $2.5M / $10M post · founders ~52% · use of funds 45/25/12/10/8.</div>
+    </section>
+
+    <!-- ===================== SLIDE 20 — CLOSE ===================== -->
+    <section class="slide cover">
+      <div class="slide-body" style="justify-content:center; align-items:flex-start;">
+        <svg viewBox="0 0 1280 720" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; opacity:0.95; pointer-events:none;">
+          <path d="M -40 560 C 300 540 480 360 700 320 C 940 276 1100 140 1340 90" fill="none" stroke="url(#seamCov)" stroke-width="2.8" filter="url(#glowCov)"/>
+        </svg>
+        <div class="eyebrow" style="position:relative;">Close</div>
+        <h1 class="title" style="font-size:60px; max-width:16ch; position:relative;">See demand <span class="copper">before</span> it's an order.</h1>
+        <p class="lead" style="font-size:20px; max-width:62ch; position:relative;">Five signals fused into one forecast. A moat only Grupo AG can supply. A category the world's largest makers already pay for. We know the one thing we have to prove — and we've aimed the whole next sprint at exactly that.</p>
+        <div style="display:flex; align-items:center; gap:16px; margin-top:34px; position:relative;">
+          <div class="wordmark"><span class="mk" id="close-mark"></span><span class="wm">VETA</span></div>
+          <span class="dim" style="font-size:22px;">&times;</span>
+          <span class="pill" style="font-size:15px;">Grupo AG</span>
+          <span class="dim" style="margin-left:10px;">The forward demand layer for Latin American construction</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- progress seam -->
+<div id="seam-track"><div id="seam-fill"></div></div>
+<!-- chrome -->
+<div id="chrome">
+  <button class="navbtn" id="prev" aria-label="Previous slide">&#8249;</button>
+  <span id="counter"><b>1</b> / 20</span>
+  <button class="navbtn" id="next" aria-label="Next slide">&#8250;</button>
+</div>
+<div class="hint"><span class="kbd">&larr;</span> <span class="kbd">&rarr;</span> or <span class="kbd">space</span> to navigate</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length;
+  var idx = 0;
+  var fill = document.getElementById('seam-fill');
+  var counter = document.getElementById('counter').querySelector('b');
+
+  // Inline the seam-through-V logo mark into every wordmark slot
+  var markSVG = '<svg viewBox="0 0 64 64" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">'
+    + '<defs><linearGradient id="lgm" x1="0" y1="0" x2="1" y2="1">'
+    + '<stop offset="0%" stop-color="#B85C1E"/><stop offset="50%" stop-color="#E8923A"/><stop offset="100%" stop-color="#FFC777"/>'
+    + '</linearGradient><filter id="lgmg"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'
+    + '<path d="M10 12 L26 50 L34 50" fill="none" stroke="#5C6573" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '<path d="M54 6 L30 56 L40 50" fill="none" stroke="#3A4654" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>'
+    + '<path d="M58 4 L20 60" fill="none" stroke="url(#lgm)" stroke-width="2.6" stroke-linecap="round" filter="url(#lgmg)"/>'
+    + '</svg>';
+  ['cov-mark','rev-mark','close-mark'].forEach(function(id){ var el=document.getElementById(id); if(el) el.innerHTML=markSVG; });
+
+  function show(n){
+    idx = Math.max(0, Math.min(total-1, n));
+    slides.forEach(function(s,i){ s.classList.toggle('active', i===idx); });
+    fill.style.width = ((idx)/(total-1)*100) + '%';
+    counter.textContent = (idx+1);
+  }
+  function nextS(){ show(idx+1); }
+  function prevS(){ show(idx-1); }
+
+  document.getElementById('next').addEventListener('click', nextS);
+  document.getElementById('prev').addEventListener('click', prevS);
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown'){ e.preventDefault(); nextS(); }
+    else if(e.key==='ArrowLeft' || e.key==='PageUp'){ e.preventDefault(); prevS(); }
+    else if(e.key==='Home'){ show(0); }
+    else if(e.key==='End'){ show(total-1); }
+  });
+
+  // Scale the 1280x720 canvas to fit the viewport (contain)
+  var canvas = document.getElementById('canvas');
+  function fit(){
+    var pad = 0;
+    var sw = (window.innerWidth - pad) / 1280;
+    var sh = (window.innerHeight - pad) / 720;
+    var s = Math.min(sw, sh);
+    canvas.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+  show(0);
+})();
+</script>
+</body>
+</html>

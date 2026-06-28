@@ -497,6 +497,12 @@
     // ============================================================
     // UTIL
     // ============================================================
+    // HTML-escape any backend-derived string before it enters an innerHTML sink.
+    var esc = function (s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    };
     function regionById(id) { return DATA.regions.find(function (r) { return r.id === id; }) || {}; }
     function materialById(id) { return DATA.materials.find(function (m) { return m.id === id; }) || {}; }
 
@@ -546,10 +552,10 @@
       var rSel = document.getElementById("sel-region");
       var mSel = document.getElementById("sel-material");
       rSel.innerHTML = DATA.regions.map(function (r) {
-        return '<option value="' + r.id + '">' + r.region_name + " · " + r.country + "</option>";
+        return '<option value="' + esc(r.id) + '">' + esc(r.region_name) + " · " + esc(r.country) + "</option>";
       }).join("");
       mSel.innerHTML = DATA.materials.map(function (m) {
-        return '<option value="' + m.id + '">' + m.name + "</option>";
+        return '<option value="' + esc(m.id) + '">' + esc(m.name) + "</option>";
       }).join("");
       if (!regionById(state.region).id) state.region = DATA.regions[0].id;
       if (!materialById(state.material).id) state.material = DATA.materials[0].id;
@@ -580,7 +586,7 @@
       // 90-day forecast demand
       var demand = next90(state.region, state.material);
       document.getElementById("kpi-demand").innerHTML =
-        fmtNum(demand) + '<span class="kpi__unit">' + (mat.unit || "") + "</span>";
+        fmtNum(demand) + '<span class="kpi__unit">' + esc(mat.unit || "") + "</span>";
       document.getElementById("kpi-demand-note").textContent = mat.name + " · next 3 months";
 
       // spark of full series forecast volume
@@ -815,11 +821,11 @@
         var ydir = x.yoy > 0.002 ? "up" : (x.yoy < -0.002 ? "down" : "flat");
         var active = x.r.id === state.region;
         return '' +
-          '<div class="region-row' + (active ? " region-row--active" : "") + '" data-region="' + x.r.id + '" role="button" tabindex="0">' +
+          '<div class="region-row' + (active ? " region-row--active" : "") + '" data-region="' + esc(x.r.id) + '" role="button" tabindex="0">' +
             '<div class="region-rank">' + (idx + 1) + '</div>' +
             '<div class="region-main">' +
-              '<div class="region-name">' + x.r.region_name + '</div>' +
-              '<div class="region-country">' + x.r.country + '</div>' +
+              '<div class="region-name">' + esc(x.r.region_name) + '</div>' +
+              '<div class="region-country">' + esc(x.r.country) + '</div>' +
               '<div class="region-bar"><div class="region-bar__fill" style="width:' + pct.toFixed(1) + '%"></div></div>' +
             '</div>' +
             '<div class="region-fig">' +
@@ -862,11 +868,11 @@
           '<div class="signal-item">' +
             '<div class="signal-icon">' + (SIGNAL_ICONS[sig.source_type] || SIGNAL_ICONS.field) + '</div>' +
             '<div class="signal-body">' +
-              '<div class="signal-top"><span class="signal-source">' + sig.source_name + '</span><span class="signal-type">' + sig.source_type + '</span></div>' +
-              '<p class="signal-desc">' + sig.description + '</p>' +
+              '<div class="signal-top"><span class="signal-source">' + esc(sig.source_name) + '</span><span class="signal-type">' + esc(sig.source_type) + '</span></div>' +
+              '<p class="signal-desc">' + esc(sig.description) + '</p>' +
               '<div class="signal-meta">' +
                 '<div class="signal-strength"><div class="strength-track"><div class="strength-fill" style="width:' + pct + '%"></div></div><span class="strength-val">' + pct + '</span></div>' +
-                '<span class="signal-date">' + (reg.region_name ? reg.region_name + " · " : "") + timeAgo(sig.signal_date) + '</span>' +
+                '<span class="signal-date">' + (reg.region_name ? esc(reg.region_name) + " · " : "") + timeAgo(sig.signal_date) + '</span>' +
               '</div>' +
             '</div>' +
           '</div>';
@@ -886,13 +892,13 @@
         var reg = regionById(a.region_id);
         var mat = materialById(a.material_id);
         return '' +
-          '<div class="alert-card alert-card--' + a.severity + '">' +
+          '<div class="alert-card alert-card--' + esc(a.severity) + '">' +
             '<div class="alert-head">' +
-              '<span class="alert-tag alert-tag--' + a.severity + '">' + a.severity + '</span>' +
+              '<span class="alert-tag alert-tag--' + esc(a.severity) + '">' + esc(a.severity) + '</span>' +
             '</div>' +
-            '<div class="alert-title">' + a.title + '</div>' +
-            '<p class="alert-body">' + a.body + '</p>' +
-            '<div class="alert-loc">📍 ' + (reg.region_name || a.region_id) + ' · ' + (mat.name || a.material_id) + '</div>' +
+            '<div class="alert-title">' + esc(a.title) + '</div>' +
+            '<p class="alert-body">' + esc(a.body) + '</p>' +
+            '<div class="alert-loc">📍 ' + esc(reg.region_name || a.region_id) + ' · ' + esc(mat.name || a.material_id) + '</div>' +
           '</div>';
       }).join("") || '<div class="empty">No active alerts.</div>';
     }
