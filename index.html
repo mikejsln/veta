@@ -330,6 +330,10 @@
 
     /* shared seam glyph in headings */
     .seam-tick { color: var(--veta-copper); }
+
+    /* clickable citations — deep links to the exact source page */
+    .cite { color: var(--veta-text-muted); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--veta-strata-2); transition: color 140ms ease; }
+    .cite:hover { color: var(--veta-amber); text-decoration-color: var(--veta-copper); }
   </style>
 </head>
 
@@ -865,7 +869,11 @@
         </div>
 
         <p class="veta-muted" style="font-size: var(--veta-text-xs); margin-top: var(--veta-space-6); text-align: center;">
-          Grupo AG is the launch partner - a channel-data wedge, not the sole customer. Near-term is a focused ~$1.6M-SOM wedge; the $500M+ is the long-term market the data asset opens onto, sized bottom-up against category comps (S&amp;P Commodity Insights, Argus, Wood Mackenzie, Procore). Market figures are directional.
+          Grupo AG is the launch partner - a channel-data wedge, not the sole customer. Near-term is a focused ~$1.6M-SOM wedge; the $500M+ is the long-term market the data asset opens onto, sized bottom-up against category comps
+          (<a class="cite" href="https://bullfincher.io/companies/sp-global/revenue-by-segment" target="_blank" rel="noopener">S&amp;P Commodity Insights $2.14B</a>,
+          <a class="cite" href="https://www.bloomberg.com/news/articles/2016-05-23/general-atlantic-agrees-to-buy-majority-stake-in-argus-media" target="_blank" rel="noopener">Argus ~$1.4B</a>,
+          <a class="cite" href="https://www.verisk.com/company/newsroom/verisk-announces-the-sale-of-wood-mackenzie-to-veritas-capital/" target="_blank" rel="noopener">Wood Mackenzie sold $3.1B</a>,
+          <a class="cite" href="https://www.procore.com/press/procore-announces-fourth-quarter-and-full-year-2025-financial-results" target="_blank" rel="noopener">Procore $1.32B</a>). Comp figures verified 2026-06-28; market sizing is directional.
         </p>
       </div>
     </section>

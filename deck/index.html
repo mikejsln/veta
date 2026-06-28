@@ -115,6 +115,9 @@
   /* footnote / source line */
   .source { font-size: 12px; color: var(--veta-text-faint); margin-top: auto; padding-top: 18px; line-height: 1.5; }
   .source b { color: var(--veta-text-dim); font-weight: 600; }
+  /* clickable citations — deep links to the exact source page */
+  .source a, .dim a, p a.cite { color: var(--veta-text-dim); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--veta-strata-2); transition: color var(--veta-dur-fast) var(--veta-ease); }
+  .source a:hover, .dim a:hover, p a.cite:hover { color: var(--veta-amber); text-decoration-color: var(--veta-copper); }
 
   /* ---- Wordmark ---- */
   .wordmark { display: inline-flex; align-items: center; gap: 14px; }
@@ -397,7 +400,7 @@
           <span><span class="dot no" style="vertical-align:middle"></span> none</span>
           <span style="margin-left:auto; color:var(--veta-amber); font-weight:600;">The empty row — forward LatAm demand volume — is Veta.</span>
         </div>
-        <div class="source"><b>Sources (market.md):</b> Dodge US-only county-level; CemWeek country-level only; LogComex $43.4M raised, reads customs backward; Building Radar/BNC = leads.</div>
+        <div class="source"><b>Sources:</b> Dodge US-only county-level; CemWeek country-level only; <a class="cite" href="https://www.riverwoodcapital.com/investment/logcomex/" target="_blank" rel="noopener">LogComex $43.4M raised</a> (Series B R$165M / ~$32.5M, Riverwood, Nov 2023), reads customs backward; Building Radar/BNC = leads.</div>
       </div>
     </section>
 
@@ -583,10 +586,15 @@
               <text x="372" y="338" fill="#FFC777" font-weight="800" font-size="20">$520M+</text>
             </g>
           </svg>
-          <p class="dim" style="font-size:11px; margin-top:6px;">Bottom-up at each step (market-sizing.md §6). Comps: S&amp;P Commodity Insights $2.14B · Wood Mackenzie sold $3.1B · Argus ~$1.4B · Procore $1.32B. The $500M+ is the market the wedge opens onto — not near-term revenue.</p>
+          <p class="dim" style="font-size:11px; margin-top:6px;">Bottom-up at each step (market-sizing.md §6). Comps:
+            <a class="cite" href="https://bullfincher.io/companies/sp-global/revenue-by-segment" target="_blank" rel="noopener">S&amp;P Commodity Insights $2.14B</a> ·
+            <a class="cite" href="https://www.verisk.com/company/newsroom/verisk-announces-the-sale-of-wood-mackenzie-to-veritas-capital/" target="_blank" rel="noopener">Wood Mackenzie sold $3.1B</a> ·
+            <a class="cite" href="https://www.bloomberg.com/news/articles/2016-05-23/general-atlantic-agrees-to-buy-majority-stake-in-argus-media" target="_blank" rel="noopener">Argus ~$1.4B</a> ·
+            <a class="cite" href="https://www.procore.com/press/procore-announces-fourth-quarter-and-full-year-2025-financial-results" target="_blank" rel="noopener">Procore $1.32B</a>.
+            The $500M+ is the market the wedge opens onto — not near-term revenue.</p>
         </div>
       </div>
-      <div class="source"><b>Source (market-sizing.md §6, bottom-up + category comps):</b> near-term SOM $1.6M / TAM $3.7M → v2 ~$88M (geography × buyer types) → <b>v3 ~$520M base</b> (range $342M–$1.3B) via products × category creation. ≥$500M = ~0.02% of the ~$2.19T building-materials segment. Exit = strategic M&amp;A (LogComex / Dodge / cement major / commodity-intel platform).</div>
+      <div class="source"><b>Source (market-sizing.md §6, bottom-up + category comps):</b> near-term SOM $1.6M / TAM $3.7M → v2 ~$88M (geography × buyer types) → <b>v3 ~$520M base</b> (range $342M–$1.3B) via products × category creation. ≥$500M = ~0.02% of the ~<a class="cite" href="https://www.towardschemandmaterials.com/insights/building-and-construction-materials-market" target="_blank" rel="noopener">$2.19T building-materials segment</a> (Towards Chem &amp; Materials / Precedence Research, 2024). Exit = strategic M&amp;A (<a class="cite" href="https://www.riverwoodcapital.com/investment/logcomex/" target="_blank" rel="noopener">LogComex</a> / Dodge / cement major / commodity-intel platform). <span class="dim">Comp figures verified 2026-06-28.</span></div>
     </section>
 
     <!-- ===================== SLIDE 14 — BUSINESS MODEL & PRICING ===================== -->
@@ -694,7 +702,7 @@
           <div class="card">
             <div class="k teal">Proven behavior</div>
             <p style="margin-top:10px; font-size:16px; color:var(--veta-text);"><b>Holcim</b> and <b>Heidelberg Materials</b> — the two largest building-materials makers in the world — pay <b>Building Radar</b> for construction intelligence.</p>
-            <p style="margin-top:10px;">Verifiable from Holcim's own LinkedIn, tied to its NextGen Growth 2030 strategy (~Aug 2025). BNC sells the same category at $360 / $480 / $720 per user/yr + $2,499/yr analytics.</p>
+            <p style="margin-top:10px;">Verifiable from <a class="cite" href="https://www.linkedin.com/posts/holcim_buildingsolutions-buildingprogress-digitalization-activity-7359175699221385217-af5k" target="_blank" rel="noopener">Holcim's own LinkedIn</a>, tied to its NextGen Growth 2030 strategy (~Aug 2025); both makers also appear on <a class="cite" href="https://www.buildingradar.com/reference-customers" target="_blank" rel="noopener">Building Radar's reference-customer page</a>. BNC sells the same category at $360 / $480 / $720 per user/yr + $2,499/yr analytics.</p>
           </div>
           <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
             <div style="display:flex; gap:14px; flex-wrap:wrap;">
@@ -710,7 +718,7 @@
           <div class="kk">The one honest gap — our #1 risk, on the slide on purpose</div>
           <p>That proven willingness-to-pay is for project <b>leads</b>. We sell the <b>forecast</b>. Same buyers, adjacent product — and our specific layer is <b>untested</b>. It's the first thing we prove: a paid LOI from a non-AG manufacturer for the forecast. <span class="dim">The pivot is pre-baked — if they'll only pay for leads, Veta pivots to lead-intel (already validated) or index-licensing to FIs.</span></p>
         </div>
-        <div class="source"><b>Sources (market.md):</b> Holcim + Heidelberg pay Building Radar (Holcim LinkedIn, NextGen Growth 2030, ~Aug 2025); BNC published pricing. Forecast-layer WTP is signal, not evidence — assumption #1, currently untested.</div>
+        <div class="source"><b>Sources:</b> Holcim + Heidelberg Materials pay Building Radar (<a class="cite" href="https://www.linkedin.com/posts/holcim_buildingsolutions-buildingprogress-digitalization-activity-7359175699221385217-af5k" target="_blank" rel="noopener">Holcim LinkedIn</a>, NextGen Growth 2030, ~Aug 2025; <a class="cite" href="https://www.buildingradar.com/reference-customers" target="_blank" rel="noopener">Building Radar reference customers</a>); BNC published pricing. Forecast-layer WTP is signal, not evidence — assumption #1, currently untested. <span class="dim">Verified 2026-06-28.</span></div>
       </div>
     </section>
 
@@ -857,7 +865,31 @@
       <div class="source"><b>Source (cap-table.md / path-to-seed.md):</b> IC approve launch + $500K for 35% FDE (as-converted, Post-Money SAFE → Preferred at Seed) · founders+ESOP 65% · Seed ~$1M @ ~$5M post ~12mo out · use of funds 45/25/15/10/5.</div>
     </section>
 
-    <!-- ===================== SLIDE 20 — CLOSE ===================== -->
+    <!-- ===================== SLIDE 20 — SOURCES / REFERENCES ===================== -->
+    <section class="slide">
+      <div class="eyebrow">Sources &amp; references</div>
+      <div class="slide-body">
+        <h2 class="head wide" style="font-size:32px;">Every external figure — sourced, tiered, clickable</h2>
+        <p class="lead" style="font-size:15px; max-width:70ch;">APA 7 · credibility tier · verified to resolve and support the claim on 2026-06-28. Click any title to open the exact source.</p>
+        <div class="grid2" style="margin-top:22px; gap:14px 36px; align-items:start;">
+          <ul class="clean" style="font-size:12.5px;">
+            <li style="margin-bottom:9px;"><a class="cite" href="https://bullfincher.io/companies/sp-global/revenue-by-segment" target="_blank" rel="noopener">Bullfincher (2025). <i>S&amp;P Global revenue by segment</i></a> — Commodity Insights $2.14B FY24 <span class="dim">[T2]</span></li>
+            <li style="margin-bottom:9px;"><a class="cite" href="https://www.verisk.com/company/newsroom/verisk-announces-the-sale-of-wood-mackenzie-to-veritas-capital/" target="_blank" rel="noopener">Verisk (2022). <i>Sale of Wood Mackenzie to Veritas Capital</i></a> — $3.1B, closed Feb 2023 <span class="dim">[T1]</span></li>
+            <li style="margin-bottom:9px;"><a class="cite" href="https://www.bloomberg.com/news/articles/2016-05-23/general-atlantic-agrees-to-buy-majority-stake-in-argus-media" target="_blank" rel="noopener">Bloomberg (2016). <i>General Atlantic buys majority stake in Argus Media</i></a> — ~$1.4B <span class="dim">[T2]</span></li>
+            <li style="margin-bottom:9px;"><a class="cite" href="https://www.procore.com/press/procore-announces-fourth-quarter-and-full-year-2025-financial-results" target="_blank" rel="noopener">Procore (2026). <i>Q4 &amp; full-year 2025 results</i></a> — FY25 revenue $1.32B, +15% <span class="dim">[T1]</span></li>
+          </ul>
+          <ul class="clean" style="font-size:12.5px;">
+            <li style="margin-bottom:9px;"><a class="cite" href="https://www.linkedin.com/posts/holcim_buildingsolutions-buildingprogress-digitalization-activity-7359175699221385217-af5k" target="_blank" rel="noopener">Holcim (2025). <i>Holcim partners with Building Radar</i></a> — NextGen Growth 2030 <span class="dim">[T1]</span></li>
+            <li style="margin-bottom:9px;"><a class="cite" href="https://www.buildingradar.com/reference-customers" target="_blank" rel="noopener">Building Radar (2026). <i>Reference customers</i></a> — Holcim, Heidelberg Materials, Schindler <span class="dim">[T2]</span></li>
+            <li style="margin-bottom:9px;"><a class="cite" href="https://www.riverwoodcapital.com/investment/logcomex/" target="_blank" rel="noopener">Riverwood Capital (2023). <i>Logcomex</i></a> — Series B ~$32.5M; $43.4M total raised <span class="dim">[T2]</span></li>
+            <li style="margin-bottom:9px;"><a class="cite" href="https://www.towardschemandmaterials.com/insights/building-and-construction-materials-market" target="_blank" rel="noopener">Towards Chem &amp; Materials (2025). <i>Building &amp; construction materials market</i></a> — ~$2.19T (2024) <span class="dim">[T2]</span></li>
+          </ul>
+        </div>
+        <div class="source"><b>Note:</b> S&amp;P Global folded Commodity Insights into a broader segment in its FY2025 reorg — $2.14B (FY24) is the last separately reported figure. Forecast-layer WTP remains <i>signal, not evidence</i> (assumption #1). Internal models: market-sizing.md · pricing-roi.md · path-to-seed.md · cap-table.md; full per-claim audit in source-ledger-2026-06-28.md.</div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 21 — CLOSE ===================== -->
     <section class="slide cover">
       <div class="slide-body" style="justify-content:center; align-items:flex-start;">
         <svg viewBox="0 0 1280 720" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; opacity:0.95; pointer-events:none;">
@@ -883,7 +915,7 @@
 <!-- chrome -->
 <div id="chrome">
   <button class="navbtn" id="prev" aria-label="Previous slide">&#8249;</button>
-  <span id="counter"><b>1</b> / 20</span>
+  <span id="counter"><b>1</b> / 21</span>
   <button class="navbtn" id="next" aria-label="Next slide">&#8250;</button>
 </div>
 <div class="hint"><span class="kbd">&larr;</span> <span class="kbd">&rarr;</span> or <span class="kbd">space</span> to navigate</div>
