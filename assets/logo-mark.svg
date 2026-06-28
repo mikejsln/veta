@@ -1,42 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Veta mark">
-  <title>Veta mark — a luminous ore seam cutting through the V</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Veta mark">
+  <title>Veta mark — a seam that bends into a rising demand forecast</title>
+  <desc>A single line: dim flat history on the left, a teal signal node at the inflection, then a luminous copper-to-amber line rising into the forecast.</desc>
   <defs>
-    <!-- The vein: deep copper into bright amber -->
-    <linearGradient id="vm-seam" x1="0" y1="1" x2="1" y2="0">
+    <!-- The vein: deep copper into bright amber, along the rising forecast arm -->
+    <linearGradient id="veta-seam" x1="28" y1="46" x2="56" y2="12" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#B85C1E"/>
-      <stop offset="0.45" stop-color="#E8923A"/>
+      <stop offset="0.5" stop-color="#E8923A"/>
       <stop offset="1" stop-color="#FFC777"/>
     </linearGradient>
-    <linearGradient id="vm-rock" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#1B222B"/>
-      <stop offset="1" stop-color="#0B0E11"/>
-    </linearGradient>
-    <filter id="vm-glow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="2.4" result="b"/>
-      <feMerge>
-        <feMergeNode in="b"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
+    <filter id="veta-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="1.6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
 
-  <!-- Mineral rock tile -->
-  <rect x="0" y="0" width="128" height="128" rx="26" fill="url(#vm-rock)"/>
-  <rect x="0.75" y="0.75" width="126.5" height="126.5" rx="25.25" fill="none" stroke="#2A323D" stroke-width="1.5"/>
+  <!-- History: flat, dim, buried in the rock -->
+  <path d="M8 43 L28 46" fill="none" stroke="#3A4654" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- The V, rendered as two strata strokes of rock -->
-  <g stroke="#3A4654" stroke-width="13" stroke-linecap="round" fill="none">
-    <path d="M34 36 L60 84"/>
-    <path d="M94 36 L68 84"/>
+  <!-- Forecast: the seam bends up and glows -->
+  <g filter="url(#veta-glow)">
+    <path d="M28 46 L56 12" fill="none" stroke="url(#veta-seam)" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
+  <path d="M28 46 L56 12" fill="none" stroke="#FFE0AE" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/>
 
-  <!-- The seam: a single luminous vein cutting diagonally through the V, continuing beyond it -->
-  <g filter="url(#vm-glow)">
-    <path d="M22 98 L106 30" stroke="url(#vm-seam)" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-  </g>
-  <!-- Bright core of the vein -->
-  <path d="M22 98 L106 30" stroke="#FFE0AE" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.9"/>
-
-  <!-- Ore node where seam crosses the valley of the V -->
-  <circle cx="64" cy="65.7" r="3.4" fill="#FFD79A" filter="url(#vm-glow)"/>
+  <!-- The signal node at the inflection: where the seam stops describing the past and starts predicting -->
+  <circle cx="28" cy="46" r="4.4" fill="#0B0E11"/>
+  <circle cx="28" cy="46" r="3.2" fill="#3DD6C4"/>
 </svg>
